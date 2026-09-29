@@ -1,0 +1,7 @@
+node_modules/
+dist/
+# ไฟล์ผลตรวจจริงของคนไข้ ห้ามขึ้น git
+ex/
+*.csv
+*.xls
+*.xlsx
