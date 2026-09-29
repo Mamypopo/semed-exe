@@ -97,7 +97,7 @@ function metric(label, value, cls = '') {
 
 function card(r) {
   const bad = !r.ok;
-  const d = el('details', { class: `file ${bad ? 'bad' : 'good'}`, open: bad });
+  const d = el('details', { class: `file ${bad ? 'bad' : 'good'}` });
   d.append(el('summary', {},
     el('span', { class: `status ${bad ? 'bad' : 'ok'}`, text: bad ? 'ไม่สมบูรณ์' : 'สมบูรณ์' }),
     el('span', { class: 'fname', text: r.fileName }),
