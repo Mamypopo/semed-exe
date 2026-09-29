@@ -2,40 +2,42 @@
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ตรวจสอบไฟล์ผลตรวจปอด</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="updateBar" class="update-bar" hidden></div>
-  <main>
-    <header>
-      <h1>ตรวจสอบไฟล์ผลตรวจปอด</h1>
-      <p class="sub">ตรวจว่าไฟล์จากเครื่อง Spirometry สมบูรณ์หรือไม่ก่อนนำไปใช้ต่อ — ตรวจในเครื่องนี้เท่านั้น ไม่ส่งข้อมูลออกอินเทอร์เน็ต และไม่แก้ไขไฟล์</p>
-    </header>
 
-    <section id="drop" class="drop" tabindex="0" role="button" aria-label="ลากไฟล์มาวางหรือกดเพื่อเลือกไฟล์">
-      <div class="drop-title">ลากไฟล์มาวางที่นี่ หรือกดเพื่อเลือกไฟล์</div>
-      <div class="drop-hint">.xls, .xlsx, .csv — สูงสุด 20 ไฟล์ ไฟล์ละไม่เกิน 10MB</div>
+  <header class="topbar">
+    <div class="topbar-in">
+      <span class="app-name">ตรวจสอบไฟล์ผลตรวจปอด</span>
+      <span class="app-note">Spirometry · ตรวจในเครื่องนี้เท่านั้น ไม่แก้ไขไฟล์ ไม่ส่งข้อมูลออกอินเทอร์เน็ต</span>
+    </div>
+  </header>
+
+  <main>
+    <section id="drop" class="drop" tabindex="0" role="button" aria-label="เลือกไฟล์ผลตรวจ">
+      <div class="drop-main">ลากไฟล์ผลตรวจมาวางที่นี่ หรือ <u>เลือกจากเครื่อง</u></div>
+      <div class="drop-hint">.xls .xlsx .csv · ไม่เกิน 20 ไฟล์ · ไฟล์ละไม่เกิน 10 MB</div>
       <input id="picker" type="file" multiple accept=".xls,.xlsx,.csv" hidden>
     </section>
 
-    <section id="picked" hidden>
+    <section id="picked" class="picked" hidden>
       <ul id="fileList" class="file-list"></ul>
-      <div id="pickNote" class="note" hidden></div>
+      <p id="pickNote" class="note" hidden></p>
       <div class="actions">
         <button id="checkBtn" class="btn primary">ตรวจสอบ</button>
         <button id="clearBtn" class="btn">ล้างไฟล์</button>
       </div>
     </section>
 
-    <section id="results" hidden>
+    <section id="results" class="results" hidden>
       <div class="results-head">
-        <h2>ผลการตรวจ</h2>
+        <p id="summary" class="summary"></p>
         <button id="exportBtn" class="btn">ส่งออกผลเป็น CSV/Excel</button>
       </div>
-      <div id="summary" class="summary"></div>
       <div id="cards"></div>
     </section>
   </main>

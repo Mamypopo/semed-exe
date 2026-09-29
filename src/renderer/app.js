@@ -76,15 +76,13 @@ checkBtn.addEventListener('click', async () => {
   }
 });
 
-function stat(label, value, cls) { return el('div', { class: `stat ${cls || ''}` }, el('b', { text: String(value) }), el('span', { text: label })); }
-
 function table(items, cols, limit = PREVIEW_ROWS) {
   const wrap = el('div');
   const tbody = el('tbody');
   const addRows = (from, to) => items.slice(from, to).forEach((it) => tbody.append(el('tr', {},
-    el('td', { class: 'rows', text: it.rowsText || '-' }), el('td', { text: it.cn || '-' }), el('td', { class: 'msg', text: it.message }))));
+    el('td', { class: 'num', text: it.rowsText || '-' }), el('td', { class: 'num', text: it.cn || '-' }), el('td', { class: 'msg', text: it.message }))));
   addRows(0, limit);
-  wrap.append(el('table', {}, el('thead', {}, el('tr', {}, ...cols.map((c) => el('th', { text: c })))), tbody));
+  wrap.append(el('div', { class: 'tbl-wrap' }, el('table', {}, el('thead', {}, el('tr', {}, ...cols.map((c) => el('th', { text: c })))), tbody)));
   if (items.length > limit) {
     const btn = el('button', { class: 'btn more', text: `แสดงทั้งหมด (${items.length} รายการ)` });
     btn.addEventListener('click', () => { addRows(limit, items.length); btn.remove(); });
@@ -93,27 +91,30 @@ function table(items, cols, limit = PREVIEW_ROWS) {
   return wrap;
 }
 
+function metric(label, value, cls = '') {
+  return el('div', {}, el('dt', { text: label }), el('dd', { class: value === 0 ? 'zero' : cls, text: String(value) }));
+}
+
 function card(r) {
   const bad = !r.ok;
-  const d = el('details', { class: `card ${bad ? 'bad' : ''}`, open: bad });
-  const metric = (k, v) => el('span', {}, `${k} `, el('b', { text: String(v) }));
+  const d = el('details', { class: `file ${bad ? 'bad' : 'good'}`, open: bad });
   d.append(el('summary', {},
+    el('span', { class: `status ${bad ? 'bad' : 'ok'}`, text: bad ? 'ไม่สมบูรณ์' : 'สมบูรณ์' }),
     el('span', { class: 'fname', text: r.fileName }),
-    el('span', { class: `badge ${bad ? 'bad' : 'ok'}`, text: bad ? 'ไม่สมบูรณ์' : 'สมบูรณ์' }),
-    el('div', { class: 'metrics' },
-      metric('จำนวนแถว', r.rowCount), metric('จำนวน CN', r.cnCount), metric('ผ่าน', r.cnPassed),
-      metric('ผิด', r.cnFailed), metric('คำเตือน', r.warnings.length))));
+    el('dl', { class: 'metrics' },
+      metric('แถว', r.rowCount), metric('CN', r.cnCount), metric('ผ่าน', r.cnPassed),
+      metric('ผิด', r.cnFailed, 'hot'), metric('คำเตือน', r.warnings.length))));
   const body = el('div', { class: 'body' });
   r.fileErrors.forEach((m) => body.append(el('div', { class: 'file-err', text: m })));
   if (r.errors.length) {
-    body.append(el('h3', { text: `รายการผิดพลาด (${r.errors.length})` }));
+    body.append(el('div', { class: 'sec-title', text: `รายการผิดพลาด ${r.errors.length} รายการ` }));
     body.append(table(r.errors, ['แถว', 'CN', 'สาเหตุ']));
   }
   if (r.warnings.length) {
-    body.append(el('h3', { class: 'warn', text: `คำเตือน (${r.warnings.length})` }));
+    body.append(el('div', { class: 'sec-title warn', text: `คำเตือน ${r.warnings.length} รายการ` }));
     body.append(table(r.warnings, ['แถว', 'CN', 'คำเตือน']));
   }
-  if (!bad && !r.warnings.length) body.append(el('div', { text: 'ไม่พบปัญหา' }));
+  if (!bad && !r.warnings.length) body.append(el('div', { class: 'clean', text: 'ไม่พบปัญหา' }));
   d.append(body);
   return d;
 }
@@ -121,7 +122,9 @@ function card(r) {
 function render(results) {
   lastResults = results;
   const okCount = results.filter((r) => r.ok).length;
-  summaryEl.replaceChildren(stat('ไฟล์ทั้งหมด', results.length), stat('สมบูรณ์', okCount, 'ok'), stat('ไม่สมบูรณ์', results.length - okCount, 'bad'));
+  const part = (label, n, cls) => el('span', {}, `${label} `, el('b', { class: cls || '', text: String(n) }));
+  const sep = () => el('span', { class: 'sep', text: '|' });
+  summaryEl.replaceChildren(part('ไฟล์ทั้งหมด', results.length), sep(), part('สมบูรณ์', okCount, 'ok'), sep(), part('ไม่สมบูรณ์', results.length - okCount, results.length - okCount ? 'bad' : ''));
   const sorted = [...results].sort((a, b) => Number(a.ok) - Number(b.ok)); // ไม่สมบูรณ์ขึ้นก่อน (sort เสถียร)
   cardsEl.replaceChildren(...sorted.map(card));
   resultsEl.hidden = false;

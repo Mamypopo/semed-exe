@@ -19,7 +19,7 @@ for (let y = 0; y < S; y++) {
   for (let x = 0; x < S; x++) {
     const i = (y * S + x) * 4;
     if (!inRound(x, y, 48)) continue;
-    px.set([31, 138, 91, 255], i); // เขียว
+    px.set([15, 92, 120, 255], i); // น้ำเงินอมเขียว
     // เครื่องหมายถูกสีขาว
     const d = Math.min(distSeg(x, y, 70, 132, 111, 174), distSeg(x, y, 111, 174, 190, 82));
     if (d <= 13) px.set([255, 255, 255, 255], i);
