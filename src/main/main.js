@@ -29,6 +29,8 @@ function createWindow() {
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 }
 
+ipcMain.handle('app-version', () => app.getVersion());
+
 ipcMain.handle('validate-files', (_e, files) => {
   const inputs = (files || []).slice(0, MAX_FILES).map((f) => ({ name: String(f.name), data: Buffer.from(f.data) }));
   return validateFiles(inputs);

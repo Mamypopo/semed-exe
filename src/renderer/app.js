@@ -145,3 +145,5 @@ window.api.onUpdateStatus((s) => {
     bar.append(b);
   }
 });
+
+window.api.getVersion().then((v) => { $('appVersion').textContent = `v${v}`; });

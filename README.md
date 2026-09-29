@@ -1,22 +1,55 @@
 # ตรวจสอบไฟล์ผลตรวจปอด
 
-แอป Electron ตรวจความสมบูรณ์ของไฟล์ผลตรวจปอด (Spirometry) — ตรวจในเครื่อง ไม่แก้ไฟล์ ไม่ส่งข้อมูลออกเน็ต
+แอป Electron (Windows) ตรวจความสมบูรณ์ของไฟล์ผลตรวจปอดจากเครื่อง Spirometry (Spirobank)
+ตรวจในเครื่องเท่านั้น ไม่แก้ไฟล์ ไม่ส่งข้อมูลออกอินเทอร์เน็ต
 
-## คำสั่ง
-- `npm start` — รันแอป (ถ้าเปิดจาก VS Code แล้วขึ้น `Cannot read properties of undefined (reading 'handle')` ให้ล้างตัวแปร `ELECTRON_RUN_AS_NODE` ก่อน)
-- `npm test` — เทสต์ตรรกะตรวจ (ใช้ไฟล์ตัวอย่างในโฟลเดอร์ `ex/`)
-- `npm run dist` — build ตัวติดตั้ง `.exe` ที่ `dist/`
-- `npm run icon` — สร้างไอคอนใหม่ (`build/icon.ico`)
+## คำสั่งที่ใช้บ่อย
+| คำสั่ง | ทำอะไร |
+|---|---|
+| `npm install` | ติดตั้งไลบรารี (ครั้งแรก) |
+| `npm start` | รันแอปเพื่อทดสอบ |
+| `npm test` | เทสต์ตรรกะตรวจ |
+| `npm run dist` | build ตัวติดตั้ง `.exe` ลงโฟลเดอร์ `dist/` (ไม่อัปโหลด) |
+| `npm run release` | build แล้วอัปโหลดขึ้น GitHub Releases |
+| `npm run icon` | สร้างไอคอนใหม่ (`build/icon.ico`) |
+
+> ถ้าเปิดจาก VS Code แล้วขึ้น `Cannot read properties of undefined (reading 'handle')` ให้ล้างตัวแปร `ELECTRON_RUN_AS_NODE` ก่อน
 
 ## โครงสร้าง
 - `src/core/validator.js` — ตรรกะตรวจ (pure function: `validateFile(buffer, fileName)`, `validateFiles([...])`)
-- `src/main/` — main process + preload (IPC)
-- `src/renderer/` — UI ภาษาไทย
+- `src/main/` — main process, preload (IPC), ตัวอัปเดต
+- `src/renderer/` — UI ภาษาไทย (ฟอนต์อยู่ในเครื่อง ใช้ออฟไลน์ได้)
+- `test/` — เทสต์ (เทสต์บางข้อใช้ไฟล์จริงจากโฟลเดอร์ `ex/` ซึ่งไม่ได้อยู่ใน git เพราะเป็นข้อมูลคนไข้)
 
-## ระบบอัปเดตผ่าน GitHub
-1. แก้ `owner` / `repo` ใน `package.json` (ส่วน `build.publish`)
-2. สร้าง Personal Access Token (สิทธิ์ repo) แล้วตั้ง `GH_TOKEN`
-3. เพิ่มเลขเวอร์ชันใน `package.json` แล้วรัน `npm run release` — จะอัปโหลดตัวติดตั้งขึ้น GitHub Releases (draft; กด Publish release)
-4. แอปที่ติดตั้งแล้วจะเช็ก/ดาวน์โหลดอัปเดตเองตอนเปิด และมีปุ่ม "ติดตั้งและรีสตาร์ท"
+## เวอร์ชัน (Semantic Versioning: `MAJOR.MINOR.PATCH`)
+เลขเวอร์ชันอยู่ที่ `version` ใน `package.json` แสดงที่มุมขวาบนของแอป (เช่น `v1.0.1`)
 
-ถ้า repo เป็น private แอปที่ติดตั้งต้องมี token อ่าน release ด้วย — แนะนำให้ใช้ repo public สำหรับ release
+| เปลี่ยนอะไร | ใช้คำสั่ง | ตัวอย่าง |
+|---|---|---|
+| **Patch** — แก้บั๊ก / ปรับข้อความ / ปรับ UI เล็กน้อย | `npm version patch` | 1.0.0 → 1.0.1 |
+| **Minor** — เพิ่มความสามารถใหม่ (ไม่กระทบของเดิม) | `npm version minor` | 1.0.1 → 1.1.0 |
+| **Major** — เปลี่ยนกติกาตรวจ/พฤติกรรมครั้งใหญ่ | `npm version major` | 1.1.0 → 2.0.0 |
+
+`npm version` จะแก้ `package.json`, สร้าง commit และ tag `vX.Y.Z` ให้อัตโนมัติ
+ตัวอัปเดตจะอัปเดตก็ต่อเมื่อเลขเวอร์ชันบน GitHub **สูงกว่า** เวอร์ชันที่ติดตั้งอยู่ ถ้าลืมเพิ่มเลขเวอร์ชัน เครื่องผู้ใช้จะไม่เห็นอัปเดต
+
+## ระบบอัปเดตออนไลน์ (ไม่ต้องไปติดตั้งใหม่ทุกเครื่อง)
+แอปใช้ `electron-updater` ดึงอัปเดตจาก GitHub Releases ของ repo `Mamypopo/semed-exe`
+ติดตั้งตัวแรกครั้งเดียว หลังจากนั้นทุกครั้งที่เปิดแอป (ต้องมีเน็ต) แอปจะเช็กเวอร์ชันใหม่เอง
+ถ้ามี จะดาวน์โหลดเบื้องหลัง แล้วขึ้นแถบด้านบนพร้อมปุ่ม **"ติดตั้งและรีสตาร์ท"** (ถ้าไม่กด จะติดตั้งให้ตอนปิดแอป)
+ถ้าออฟไลน์หรือเช็กไม่ได้ แอปยังใช้งานได้ตามปกติ และอัปเดตเฉพาะตอนที่รันแบบติดตั้งแล้ว (ไม่ทำงานตอน `npm start`)
+
+### ขั้นตอนปล่อยเวอร์ชันใหม่ (สำหรับผู้ดูแล)
+1. แก้โค้ด, `npm test` ให้ผ่าน, commit
+2. เพิ่มเวอร์ชัน: `npm version patch` (หรือ `minor` / `major`)
+3. ตั้ง token ครั้งแรก: สร้าง GitHub Personal Access Token ที่มีสิทธิ์ `repo` แล้วตั้งในเทอร์มินัล
+   - PowerShell: `$env:GH_TOKEN = "ghp_xxx"`
+4. `npm run release` — build และอัปโหลด `spirometry-checker-setup-X.Y.Z.exe`, `latest.yml`, `.blockmap` ขึ้น Release ให้เอง (เผยแพร่ทันที)
+5. `git push --follow-tags` — ส่งโค้ดและ tag ขึ้น GitHub
+
+เครื่องผู้ใช้ที่ติดตั้งไว้แล้วจะได้เวอร์ชันใหม่ในการเปิดแอปครั้งถัดไป
+
+### ข้อควรรู้
+- repo ต้องเป็น **public** แอปที่ติดตั้งจึงดึงอัปเดตได้โดยไม่ต้องมี token (ห้ามใส่ข้อมูลคนไข้ใน repo)
+- ตัวติดตั้งยังไม่ได้เซ็นชื่อ (code signing) Windows SmartScreen อาจเตือนตอนติดตั้งครั้งแรก
+- ห้ามลบหรือแก้ `latest.yml` ใน Release ด้วยมือ

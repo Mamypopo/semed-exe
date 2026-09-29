@@ -39,8 +39,9 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "REPLACE_GITHUB_OWNER",
-        "repo": "REPLACE_GITHUB_REPO"
+        "owner": "Mamypopo",
+        "repo": "semed-exe",
+        "releaseType": "release"
       }
     ]
   },
@@ -53,5 +54,9 @@
     "@fontsource/ibm-plex-sans-thai": "^5.3.0",
     "electron": "^44.4.5",
     "electron-builder": "^26.15.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mamypopo/semed-exe.git"
   }
 }
