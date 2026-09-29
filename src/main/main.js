@@ -1,8 +1,6 @@
 'use strict';
-const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
-const fs = require('fs');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const XLSX = require('xlsx');
 const { validateFiles } = require('../core/validator');
 
 const MAX_FILES = 20;
@@ -35,39 +33,6 @@ ipcMain.handle('validate-files', (_e, files) => {
   const inputs = (files || []).slice(0, MAX_FILES).map((f) => ({ name: String(f.name), data: Buffer.from(f.data) }));
   return validateFiles(inputs);
 });
-
-ipcMain.handle('export-results', async (_e, results) => {
-  const rows = [['ไฟล์', 'ประเภท', 'แถว', 'CN', 'สาเหตุ']];
-  for (const r of results) {
-    for (const m of r.fileErrors) rows.push([r.fileName, 'ไฟล์', '', '', m]);
-    for (const x of r.errors) rows.push([r.fileName, 'ผิดพลาด', x.rowsText, x.cn, x.message]);
-    for (const x of r.warnings) rows.push([r.fileName, 'คำเตือน', x.rowsText, x.cn, x.message]);
-  }
-  const { canceled, filePath } = await dialog.showSaveDialog(win, {
-    title: 'ส่งออกผลการตรวจ',
-    defaultPath: 'ผลตรวจสอบไฟล์ผลตรวจปอด.xlsx',
-    filters: [{ name: 'Excel', extensions: ['xlsx'] }, { name: 'CSV', extensions: ['csv'] }],
-  });
-  if (canceled || !filePath) return { saved: false };
-  try {
-    if (/\.csv$/i.test(filePath)) {
-      const esc = (v) => `"${String(v).replace(/"/g, '""')}"`;
-      const text = rows.map((r) => r.map(esc).join(',')).join('\r\n');
-      fs.writeFileSync(filePath, '﻿' + text, 'utf8'); // BOM ให้ Excel อ่านภาษาไทยถูก
-    } else {
-      const ws = XLSX.utils.aoa_to_sheet(rows);
-      ws['!cols'] = [{ wch: 36 }, { wch: 10 }, { wch: 14 }, { wch: 14 }, { wch: 60 }];
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'ผลตรวจ');
-      XLSX.writeFile(wb, filePath);
-    }
-    return { saved: true, filePath };
-  } catch (err) {
-    return { saved: false, error: err.message };
-  }
-});
-
-ipcMain.handle('show-in-folder', (_e, p) => shell.showItemInFolder(p));
 
 // ---------- อัปเดตอัตโนมัติจาก GitHub Releases ----------
 function setupUpdater() {

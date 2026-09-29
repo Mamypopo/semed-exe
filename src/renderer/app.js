@@ -6,7 +6,7 @@ const PREVIEW_ROWS = 50;
 const $ = (id) => document.getElementById(id);
 const drop = $('drop'), picker = $('picker'), picked = $('picked'), fileList = $('fileList');
 const pickNote = $('pickNote'), checkBtn = $('checkBtn'), clearBtn = $('clearBtn');
-const resultsEl = $('results'), summaryEl = $('summary'), cardsEl = $('cards'), exportBtn = $('exportBtn');
+const resultsEl = $('results'), summaryEl = $('summary'), cardsEl = $('cards');
 
 let files = [];
 let lastResults = [];
@@ -130,11 +130,6 @@ function render(results) {
   resultsEl.hidden = false;
   resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
-exportBtn.addEventListener('click', async () => {
-  const res = await window.api.exportResults(lastResults);
-  if (res.error) alert(`บันทึกไฟล์ไม่สำเร็จ: ${res.error}`);
-});
 
 // แถบแจ้งอัปเดต
 const bar = $('updateBar');
