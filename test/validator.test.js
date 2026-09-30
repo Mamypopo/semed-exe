@@ -90,7 +90,7 @@ test('กติกาแถวและ CN', () => {
 });
 
 test('xlsx จริง + ตัวเลขใน Code', () => {
-  const ws = XLSX.utils.aoa_to_sheet([H, ['694921405.17', 'X', 3.78, 3.04]]);
+  const ws = XLSX.utils.aoa_to_sheet([H, ['100000001.17', 'X', 3.78, 3.04]]);
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'S');
   const r = validateFile(XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' }), 'ผล.xlsx');
   assert.equal(r.ok, true);
