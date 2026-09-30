@@ -29,8 +29,14 @@ function toolRow(t) {
     btn.textContent = 'ไม่พร้อมใช้งาน';
     btn.disabled = true;
   } else {
-    meta.textContent = `${t.version} · ${fmtMB(t.size)}${t.verified ? ' · ตรวจ SHA-256' : ''}`;
-    btn.textContent = 'ดาวน์โหลด';
+    const info = `ล่าสุด ${t.version} · ${fmtMB(t.size)}${t.verified ? ' · ตรวจ SHA-256' : ''}`;
+    meta.textContent = info;
+    if (t.installed) {
+      const outdated = t.state === 'outdated';
+      meta.append(' · ', el('span', { class: `inst ${outdated ? 'old' : 'ok'}`, text: outdated ? `ติดตั้งอยู่ v${t.installed.version} · มีเวอร์ชันใหม่` : `ติดตั้งแล้ว v${t.installed.version}` }));
+    }
+    btn.textContent = t.state === 'outdated' ? `อัปเดตเป็น ${t.version}` : t.state === 'current' ? 'ติดตั้งใหม่' : 'ดาวน์โหลด';
+    if (t.state === 'current') btn.className = 'btn';
     btn.onclick = () => startDownload(t, btn);
     buttons.set(t.id, btn);
   }
@@ -43,7 +49,7 @@ async function startDownload(t, btn) {
   const res = await window.api.downloadTool(t.id);
   btn.disabled = false;
   if (res.error) {
-    btn.textContent = 'ดาวน์โหลด';
+    btn.textContent = t.state === 'outdated' ? `อัปเดตเป็น ${t.version}` : t.state === 'current' ? 'ติดตั้งใหม่' : 'ดาวน์โหลด';
     toast(`ดาวน์โหลดไม่สำเร็จ: ${res.error}`, { bad: true });
     return;
   }

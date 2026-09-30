@@ -5,7 +5,8 @@ const path = require('path');
 const crypto = require('crypto');
 const { Readable, Transform } = require('stream');
 const { pipeline } = require('stream/promises');
-const { TOOLS, pickInstaller, isAllowedDownload, parseDigest } = require('./tools-core');
+const { execFile } = require('child_process');
+const { TOOLS, pickInstaller, isAllowedDownload, parseDigest, findInstalled, installState } = require('./tools-core');
 
 const CACHE_MS = 10 * 60 * 1000; // ลดการเรียก GitHub (ไม่ล็อกอินได้ 60 ครั้ง/ชม.)
 const HEADERS = { Accept: 'application/vnd.github+json', 'User-Agent': 'semed-exe' };
@@ -26,13 +27,34 @@ async function fetchRelease(tool) {
   };
 }
 
+// อ่านรายการโปรแกรมที่ติดตั้งจาก Registry (เฉพาะ Windows) — พลาดก็ถือว่าไม่ทราบ ไม่กระทบการใช้งาน
+function readInstalledApps() {
+  if (process.platform !== 'win32') return Promise.resolve([]);
+  const script = String.raw`
+    [Console]::OutputEncoding = [Text.Encoding]::UTF8
+    $p = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
+         'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
+         'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
+    $r = @(Get-ItemProperty $p -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName } | Select-Object DisplayName, DisplayVersion)
+    ConvertTo-Json -InputObject $r -Compress`;
+  return new Promise((resolve) => {
+    execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', script], { timeout: 15000, maxBuffer: 8 * 1024 * 1024, windowsHide: true, encoding: 'utf8' }, (err, out) => {
+      if (err) return resolve([]);
+      try { const j = JSON.parse(out); resolve(Array.isArray(j) ? j : [j]); } catch { resolve([]); }
+    });
+  });
+}
+
 async function loadTools(force) {
   if (!force && cache.items && Date.now() - cache.at < CACHE_MS) return cache.items;
+  const apps = TOOLS.some((t) => t.installName) ? await readInstalledApps() : [];
   const items = await Promise.all(TOOLS.map(async (t) => {
     const base = { id: t.id, type: t.type, name: t.name, desc: t.desc };
     if (t.type === 'web') return { ...base, available: true };
     try {
-      return { ...base, ...(await fetchRelease(t)) };
+      const rel = await fetchRelease(t);
+      const installed = findInstalled(apps, t.installName);
+      return { ...base, ...rel, installed, state: rel.available ? installState(installed, rel.version) : (installed ? 'current' : 'none') };
     } catch (e) {
       return { ...base, available: false, reason: 'เชื่อมต่อ GitHub ไม่ได้', error: true };
     }
