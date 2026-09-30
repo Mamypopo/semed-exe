@@ -1,36 +1,38 @@
-/* ฟอนต์อยู่ในเครื่อง (ใช้ออฟไลน์ได้) */
+/* ฟอนต์อยู่ในเครื่อง (ใช้ออฟไลน์ได้) — ตัวอักษรละติน/ตัวเลขใช้ Geist, ภาษาไทยใช้ IBM Plex Sans Thai */
 @font-face { font-family: "Plex Thai"; font-weight: 400; src: url(fonts/ibm-plex-sans-thai-thai-400-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
 @font-face { font-family: "Plex Thai"; font-weight: 600; src: url(fonts/ibm-plex-sans-thai-thai-600-normal.woff2) format("woff2"); unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
-@font-face { font-family: "Plex Thai"; font-weight: 400; src: url(fonts/ibm-plex-sans-thai-latin-400-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2013-2014, U+2018-201D, U+2022, U+2026; }
-@font-face { font-family: "Plex Thai"; font-weight: 600; src: url(fonts/ibm-plex-sans-thai-latin-600-normal.woff2) format("woff2"); unicode-range: U+0000-00FF, U+2013-2014, U+2018-201D, U+2022, U+2026; }
-@font-face { font-family: "Plex Mono"; font-weight: 400; src: url(fonts/ibm-plex-mono-latin-400-normal.woff2) format("woff2"); }
-@font-face { font-family: "Plex Mono"; font-weight: 500; src: url(fonts/ibm-plex-mono-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family: "Geist"; font-weight: 400; src: url(fonts/geist-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Geist"; font-weight: 600; src: url(fonts/geist-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family: "Geist Mono"; font-weight: 400; src: url(fonts/geist-mono-latin-400-normal.woff2) format("woff2"); }
+@font-face { font-family: "Geist Mono"; font-weight: 500; src: url(fonts/geist-mono-latin-500-normal.woff2) format("woff2"); }
 
+/* โทนขาว-ดำ พื้นเรียบ เส้นบาง ปุ่มหลักสีดำ ใช้สีเฉพาะบอกสถานะ */
 :root {
-  --bg: #eef1f4;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --ink: #15202b;
-  --muted: #566372;
-  --line: #d3dae1;
-  --line-soft: #e6ebf0;
-  --accent: #0f5c78;
+  --ink: #0a0a0a;
+  --muted: #6b6b6b;
+  --line: #e6e6e6;
+  --line-soft: #f0f0f0;
+  --accent: #0a0a0a;
   --accent-ink: #ffffff;
-  --ok: #1b7448;
-  --ok-bg: #e3f1e9;
+  --accent-hover: #2b2b2b;
+  --ok: #0b7a55;
+  --ok-bg: #e9f6f0;
   --bad: #b3261e;
-  --bad-bg: #fbeae8;
-  --warn: #7f5500;
-  --warn-bg: #fbf0d6;
-  --sans: "Plex Thai", "Leelawadee UI", "Segoe UI", Tahoma, sans-serif;
-  --mono: "Plex Mono", Consolas, monospace;
+  --bad-bg: #fdf0ee;
+  --warn: #8a5a00;
+  --warn-bg: #fdf4de;
+  --sans: "Geist", "Plex Thai", "Leelawadee UI", "Segoe UI", Tahoma, sans-serif;
+  --mono: "Geist Mono", Consolas, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #12181f; --surface: #1a222b; --ink: #e4e9ee; --muted: #93a0ae;
-    --line: #2f3a46; --line-soft: #252f39; --accent: #58b4d4; --accent-ink: #0b1a22;
-    --ok: #62c58f; --ok-bg: #163126; --bad: #f08a80; --bad-bg: #3a1e1c;
-    --warn: #e2b458; --warn-bg: #362b12; color-scheme: dark;
+    --bg: #0a0a0a; --surface: #111111; --ink: #ededed; --muted: #9a9a9a;
+    --line: #2a2a2a; --line-soft: #1f1f1f; --accent: #ededed; --accent-ink: #0a0a0a; --accent-hover: #ffffff;
+    --ok: #4fd1a0; --ok-bg: #0f2a20; --bad: #f28b82; --bad-bg: #2e1715;
+    --warn: #e2b458; --warn-bg: #2b2210; color-scheme: dark;
   }
 }
 
@@ -39,8 +41,8 @@
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
 
 .topbar { background: var(--surface); border-bottom: 1px solid var(--line); }
-.topbar-in { max-width: 1000px; margin: 0 auto; padding: 12px 24px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 18px; }
-.app-name { font-weight: 600; font-size: 17px; }
+.topbar-in { max-width: 1000px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 18px; }
+.app-name { font-weight: 600; font-size: 20px; letter-spacing: -0.01em; }
 .app-version { margin-left: auto; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
 .linkbtn { font: inherit; font-size: 12.5px; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .app-note { color: var(--muted); font-size: 13px; }
@@ -66,7 +68,7 @@ main { max-width: 1000px; margin: 0 auto; padding: 22px 24px 64px; }
 .btn:hover { border-color: var(--accent); color: var(--accent); }
 .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; padding-inline: 22px; }
-.btn.primary:hover { filter: brightness(1.12); color: var(--accent-ink); }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); }
 .btn:disabled { opacity: .55; cursor: progress; }
 
 .results { margin-top: 30px; }
