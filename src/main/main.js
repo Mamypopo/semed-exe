@@ -83,7 +83,7 @@ function setupUpdater() {
   updater.on('update-not-available', () => sendUpdate({ state: 'none' }));
   updater.on('download-progress', (p) => sendUpdate({ state: 'downloading', percent: Math.round(p.percent) }));
   updater.on('update-downloaded', (i) => sendUpdate({ state: 'ready', version: i.version }));
-  updater.on('error', () => sendUpdate({ state: 'error' }));
+  updater.on('error', (e) => sendUpdate({ state: 'error', detail: String((e && e.message) || e).split(/\r?\n/)[0].slice(0, 160) }));
   updater.checkForUpdates().catch(() => {});
 }
 

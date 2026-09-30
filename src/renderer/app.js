@@ -165,7 +165,7 @@ $('updateCheck').addEventListener('click', async () => {
 function barButton(label, run) { const b = el('button', { text: label }); b.addEventListener('click', run); return b; }
 window.api.onUpdateStatus((s) => {
   if (s.state === 'none' || s.state === 'error') {
-    if (manualCheck) toast(s.state === 'none' ? 'เป็นเวอร์ชันล่าสุดแล้ว' : 'ตรวจอัปเดตไม่สำเร็จ (ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต)', { bad: s.state === 'error' });
+    if (manualCheck) toast(s.state === 'none' ? 'เป็นเวอร์ชันล่าสุดแล้ว' : `ตรวจอัปเดตไม่สำเร็จ${s.detail ? `: ${s.detail}` : ''}`, { bad: s.state === 'error' });
     manualCheck = false;
     return;
   }
