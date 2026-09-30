@@ -49,7 +49,7 @@ async function loadTools(force) {
   if (!force && cache.items && Date.now() - cache.at < CACHE_MS) return cache.items;
   const apps = TOOLS.some((t) => t.installName) ? await readInstalledApps() : [];
   const items = await Promise.all(TOOLS.map(async (t) => {
-    const base = { id: t.id, type: t.type, name: t.name, desc: t.desc };
+    const base = { id: t.id, type: t.type, name: t.name, desc: t.desc, portable: Boolean(t.portable) };
     if (t.type === 'web') return { ...base, available: true };
     try {
       const rel = await fetchRelease(t);

@@ -56,7 +56,7 @@ async function startDownload(t, btn) {
     toast(`ดาวน์โหลดไม่สำเร็จ: ${res.error}`, { bad: true });
     return;
   }
-  setBtn(btn, 'external-link', 'เปิดตัวติดตั้ง');
+  setBtn(btn, 'external-link', t.portable ? 'เปิดโปรแกรม' : 'เปิดตัวติดตั้ง');
   const open = async () => {
     const r = await window.api.openDownloaded(res.filePath);
     if (r.error) toast(`เปิดไฟล์ไม่ได้: ${r.error}`, { bad: true });

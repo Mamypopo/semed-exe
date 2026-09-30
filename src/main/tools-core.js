@@ -5,11 +5,13 @@
  * รายการเครื่องมือ — เพิ่ม/แก้ที่นี่
  *  type 'github': ดาวน์โหลดตัวติดตั้ง .exe จาก Release ล่าสุดของ repo (ต้องเป็น public)
  *  type 'web'   : เปิดลิงก์ในเบราว์เซอร์
+ *  portable     : true ถ้าเป็นไฟล์ .exe ที่รันได้เลย ไม่ใช่ตัวติดตั้ง (ปุ่มจะเขียนว่า "เปิดโปรแกรม")
  *  installName  : (ไม่บังคับ) ชื่อโปรแกรมที่ Windows ลงทะเบียนไว้ ใช้บอกว่า "ติดตั้งแล้ว / มีเวอร์ชันใหม่"
  *                 ดูได้จาก Settings > Apps > Installed apps (ไม่ต้องใส่เลขเวอร์ชันต่อท้าย)
  */
 const TOOLS = [
   { id: 'scanner', type: 'github', repo: 'Mamypopo/semed-scan-auto', name: 'SEMed Scanner', desc: 'โปรแกรมสแกนของ SEMed', installName: 'SEMed Scanner' },
+  { id: 'idcard', type: 'github', repo: 'Mamypopo/semed-tools-files', name: 'โปรแกรมอ่านบัตรประชาชน', desc: 'ไฟล์ .exe รันได้เลย ไม่ต้องติดตั้ง (IDCard_reader.exe)', portable: true },
   { id: 'qr', type: 'web', url: 'https://qr-gen-dun-gamma.vercel.app/', name: 'สร้าง QR Code', desc: 'เว็บสร้าง QR Code (เปิดในเบราว์เซอร์)' },
   // ตัวอย่างที่เพิ่มได้เมื่อพร้อม:
   // { id: 'printagent', type: 'github', repo: 'Mamypopo/<repo ที่มี Release ของ printagent>', name: 'Print Agent', desc: '...' },
