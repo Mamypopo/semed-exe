@@ -1,7 +1,7 @@
 {
   "name": "spirometry-checker",
   "productName": "ตรวจสอบไฟล์ผลตรวจปอด",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "ตรวจสอบความสมบูรณ์ของไฟล์ผลตรวจปอด (Spirometry)",
   "main": "src/main/main.js",
   "author": "SEMed",
