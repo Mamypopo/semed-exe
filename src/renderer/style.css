@@ -146,3 +146,12 @@ td.msg { overflow-wrap: anywhere; }
 .tool-meta .inst { font-family: var(--sans); font-weight: 600; }
 .tool-meta .inst.ok { color: var(--ok); }
 .tool-meta .inst.old { color: var(--warn); }
+
+/* ไอคอน */
+.ico { width: 1.1em; height: 1.1em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+[data-icon] { display: inline-flex; }
+.btn, .tab, .linkbtn, .status { display: inline-flex; align-items: center; gap: 7px; }
+.btn { justify-content: center; }
+.status { gap: 5px; }
+.status .ico { width: 1em; height: 1em; stroke-width: 2.4; }
+.tab .ico { width: 1.05em; height: 1.05em; }

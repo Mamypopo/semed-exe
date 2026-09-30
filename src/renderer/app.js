@@ -99,7 +99,7 @@ function card(r) {
   const bad = !r.ok;
   const d = el('details', { class: `file ${bad ? 'bad' : 'good'}` });
   d.append(el('summary', {},
-    el('span', { class: `status ${bad ? 'bad' : 'ok'}`, text: bad ? 'ไม่สมบูรณ์' : 'สมบูรณ์' }),
+    el('span', { class: `status ${bad ? 'bad' : 'ok'}` }, icon(bad ? 'x' : 'check'), bad ? 'ไม่สมบูรณ์' : 'สมบูรณ์'),
     el('span', { class: 'fname', text: r.fileName }),
     el('dl', { class: 'metrics' },
       metric('แถว', r.rowCount), metric('CN', r.cnCount), metric('ผ่าน', r.cnPassed),
@@ -183,3 +183,5 @@ window.api.onUpdateStatus((s) => {
 });
 
 window.api.getVersion().then((v) => { $('appVersion').textContent = `v${v}`; });
+
+hydrateIcons();

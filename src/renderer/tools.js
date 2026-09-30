@@ -16,17 +16,20 @@ function showPage(name) {
 document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => showPage(t.dataset.page)));
 
 const fmtMB = (b) => `${(b / 1048576).toFixed(1)} MB`;
+// ปุ่มที่มีไอคอนนำหน้า (textContent จะลบไอคอน จึงใช้ตัวช่วยนี้แทน)
+function setBtn(btn, iconName, text) { btn.replaceChildren(icon(iconName), text); }
+const idleLabel = (t) => (t.state === 'outdated' ? [`download`, `อัปเดตเป็น ${t.version}`] : t.state === 'current' ? ['refresh-cw', 'ติดตั้งใหม่'] : ['download', 'ดาวน์โหลด']);
 const buttons = new Map(); // id -> ปุ่ม (ไว้อัปเดตเปอร์เซ็นต์)
 
 function toolRow(t) {
   const meta = el('div', { class: 'tool-meta' });
   const btn = el('button', { class: 'btn primary' });
   if (t.type === 'web') {
-    btn.textContent = 'เปิดเว็บ';
+    setBtn(btn, 'external-link', 'เปิดเว็บ');
     btn.onclick = () => window.api.openWeb(t.id);
   } else if (!t.available) {
     meta.append(el('span', { class: 'off', text: t.reason || 'ยังไม่พร้อมให้ดาวน์โหลด' }));
-    btn.textContent = 'ไม่พร้อมใช้งาน';
+    btn.textContent = 'ไม่พร้อมใช้งาน'; // ไม่มีไอคอน
     btn.disabled = true;
   } else {
     const info = `ล่าสุด ${t.version} · ${fmtMB(t.size)}${t.verified ? ' · ตรวจ SHA-256' : ''}`;
@@ -35,7 +38,7 @@ function toolRow(t) {
       const outdated = t.state === 'outdated';
       meta.append(' · ', el('span', { class: `inst ${outdated ? 'old' : 'ok'}`, text: outdated ? `ติดตั้งอยู่ v${t.installed.version} · มีเวอร์ชันใหม่` : `ติดตั้งแล้ว v${t.installed.version}` }));
     }
-    btn.textContent = t.state === 'outdated' ? `อัปเดตเป็น ${t.version}` : t.state === 'current' ? 'ติดตั้งใหม่' : 'ดาวน์โหลด';
+    setBtn(btn, ...idleLabel(t));
     if (t.state === 'current') btn.className = 'btn';
     btn.onclick = () => startDownload(t, btn);
     buttons.set(t.id, btn);
@@ -45,15 +48,15 @@ function toolRow(t) {
 
 async function startDownload(t, btn) {
   btn.disabled = true;
-  btn.textContent = 'กำลังโหลด 0%';
+  setBtn(btn, 'download', 'กำลังโหลด 0%');
   const res = await window.api.downloadTool(t.id);
   btn.disabled = false;
   if (res.error) {
-    btn.textContent = t.state === 'outdated' ? `อัปเดตเป็น ${t.version}` : t.state === 'current' ? 'ติดตั้งใหม่' : 'ดาวน์โหลด';
+    setBtn(btn, ...idleLabel(t));
     toast(`ดาวน์โหลดไม่สำเร็จ: ${res.error}`, { bad: true });
     return;
   }
-  btn.textContent = 'เปิดตัวติดตั้ง';
+  setBtn(btn, 'external-link', 'เปิดตัวติดตั้ง');
   const open = async () => {
     const r = await window.api.openDownloaded(res.filePath);
     if (r.error) toast(`เปิดไฟล์ไม่ได้: ${r.error}`, { bad: true });
@@ -64,7 +67,7 @@ async function startDownload(t, btn) {
 
 window.api.onToolProgress(({ id, percent }) => {
   const b = buttons.get(id);
-  if (b && b.disabled) b.textContent = `กำลังโหลด ${percent}%`;
+  if (b && b.disabled) setBtn(b, 'download', `กำลังโหลด ${percent}%`);
 });
 
 async function loadTools(force) {
@@ -79,3 +82,5 @@ async function loadTools(force) {
   }
 }
 document.getElementById('toolsRefresh').addEventListener('click', () => loadTools(true));
+
+hydrateIcons();

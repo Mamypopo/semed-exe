@@ -20,8 +20,8 @@
 
   <nav class="tabs" aria-label="เมนู">
     <div class="tabs-in">
-      <button class="tab active" type="button" data-page="check">ตรวจไฟล์ผลตรวจปอด</button>
-      <button class="tab" type="button" data-page="tools">โปรแกรมอื่น</button>
+      <button class="tab active" type="button" data-page="check"><span data-icon="file-check"></span>ตรวจไฟล์ผลตรวจปอด</button>
+      <button class="tab" type="button" data-page="tools"><span data-icon="layout-grid"></span>โปรแกรมอื่น</button>
     </div>
   </nav>
 
@@ -45,7 +45,7 @@
     <section id="results" class="results" hidden>
       <div class="results-head">
         <p id="summary" class="summary"></p>
-        <button id="exportBtn" class="btn">ส่งออกผลเป็น CSV/Excel</button>
+        <button id="exportBtn" class="btn"><span data-icon="download"></span>ส่งออกผลเป็น CSV/Excel</button>
       </div>
       <div id="cards"></div>
     </section>
@@ -54,11 +54,12 @@
   <main id="page-tools" hidden>
     <div class="tools-head">
       <p class="page-note">โปรแกรมและเว็บที่ใช้ร่วมกัน ดาวน์โหลดจาก GitHub ของ SEMed</p>
-      <button id="toolsRefresh" class="linkbtn" type="button">โหลดรายการใหม่</button>
+      <button id="toolsRefresh" class="linkbtn" type="button"><span data-icon="refresh-cw"></span>โหลดรายการใหม่</button>
     </div>
     <div id="toolList" class="tool-list"></div>
   </main>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="icons.js"></script>
   <script src="app.js"></script>
   <script src="tools.js"></script>
 </body>
