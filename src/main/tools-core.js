@@ -8,9 +8,9 @@
  */
 const TOOLS = [
   { id: 'scanner', type: 'github', repo: 'Mamypopo/semed-scan-auto', name: 'SEMed Scanner', desc: 'โปรแกรมสแกนของ SEMed' },
+  { id: 'qr', type: 'web', url: 'https://qr-gen-dun-gamma.vercel.app/', name: 'สร้าง QR Code', desc: 'เว็บสร้าง QR Code (เปิดในเบราว์เซอร์)' },
   // ตัวอย่างที่เพิ่มได้เมื่อพร้อม:
   // { id: 'printagent', type: 'github', repo: 'Mamypopo/<repo ที่มี Release ของ printagent>', name: 'Print Agent', desc: '...' },
-  // { id: 'qr', type: 'web', url: 'https://<เว็บ QR ของคุณ>', name: 'สร้าง QR Code', desc: '...' },
 ];
 
 /** เลือกไฟล์ตัวติดตั้งจาก assets ของ Release (ข้าม .blockmap / latest.yml) */
