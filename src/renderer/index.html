@@ -15,6 +15,7 @@
       <span class="app-name">ตรวจสอบไฟล์ผลตรวจปอด</span>
       <span class="app-note">Spirometry · ตรวจในเครื่องนี้เท่านั้น ไม่แก้ไขไฟล์ ไม่ส่งข้อมูลออกอินเทอร์เน็ต</span>
       <span id="appVersion" class="app-version"></span>
+      <button id="updateCheck" class="linkbtn" type="button">ตรวจสอบอัปเดต</button>
     </div>
   </header>
 
@@ -37,10 +38,12 @@
     <section id="results" class="results" hidden>
       <div class="results-head">
         <p id="summary" class="summary"></p>
+        <button id="exportBtn" class="btn">ส่งออกผลเป็น CSV/Excel</button>
       </div>
       <div id="cards"></div>
     </section>
   </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script src="app.js"></script>
 </body>
 </html>

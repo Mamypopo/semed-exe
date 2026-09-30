@@ -6,7 +6,7 @@ const PREVIEW_ROWS = 50;
 const $ = (id) => document.getElementById(id);
 const drop = $('drop'), picker = $('picker'), picked = $('picked'), fileList = $('fileList');
 const pickNote = $('pickNote'), checkBtn = $('checkBtn'), clearBtn = $('clearBtn');
-const resultsEl = $('results'), summaryEl = $('summary'), cardsEl = $('cards');
+const resultsEl = $('results'), summaryEl = $('summary'), cardsEl = $('cards'), exportBtn = $('exportBtn'), toastEl = $('toast');
 
 let files = [];
 let lastResults = [];
@@ -131,18 +131,54 @@ function render(results) {
   resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// แถบแจ้งอัปเดต
+let toastTimer;
+function toast(text, { bad = false, action } = {}) {
+  clearTimeout(toastTimer);
+  toastEl.className = `toast ${bad ? 'bad' : ''}`;
+  toastEl.replaceChildren(el('span', { text }));
+  if (action) {
+    const b = el('button', { text: action.label });
+    b.addEventListener('click', action.run);
+    toastEl.append(b);
+  }
+  toastEl.hidden = false;
+  toastTimer = setTimeout(() => { toastEl.hidden = true; }, 6000);
+}
+
+exportBtn.addEventListener('click', async () => {
+  const res = await window.api.exportResults(lastResults);
+  if (res.error) toast(`ส่งออกไม่สำเร็จ: ${res.error}`, { bad: true });
+  else if (res.saved) {
+    const name = res.filePath.split(/[\\/]/).pop();
+    toast(`ส่งออกสำเร็จ: ${name}`, { action: { label: 'เปิดโฟลเดอร์', run: () => window.api.showInFolder(res.filePath) } });
+  }
+});
+
+// อัปเดต: ผู้ใช้เลือกเองว่าจะโหลด/ติดตั้งตอนไหน
 const bar = $('updateBar');
+let manualCheck = false;
+$('updateCheck').addEventListener('click', async () => {
+  manualCheck = true;
+  const r = await window.api.checkUpdate();
+  if (!r.supported) { manualCheck = false; toast('ตรวจอัปเดตได้เฉพาะแอปที่ติดตั้งแล้ว'); }
+});
+function barButton(label, run) { const b = el('button', { text: label }); b.addEventListener('click', run); return b; }
 window.api.onUpdateStatus((s) => {
+  if (s.state === 'none' || s.state === 'error') {
+    if (manualCheck) toast(s.state === 'none' ? 'เป็นเวอร์ชันล่าสุดแล้ว' : 'ตรวจอัปเดตไม่สำเร็จ (ตรวจสอบการเชื่อมต่ออินเทอร์เน็ต)', { bad: s.state === 'error' });
+    manualCheck = false;
+    return;
+  }
+  manualCheck = false;
   bar.hidden = false;
-  bar.replaceChildren();
-  if (s.state === 'available') bar.textContent = `พบเวอร์ชันใหม่ ${s.version} กำลังดาวน์โหลด...`;
-  else if (s.state === 'downloading') bar.textContent = `กำลังดาวน์โหลดอัปเดต ${s.percent}%`;
-  else if (s.state === 'ready') {
-    bar.append(`ดาวน์โหลดเวอร์ชัน ${s.version} เรียบร้อยแล้ว`);
-    const b = el('button', { text: 'ติดตั้งและรีสตาร์ท' });
-    b.addEventListener('click', () => window.api.installUpdate());
-    bar.append(b);
+  const later = barButton('ไว้ทีหลัง', () => { bar.hidden = true; });
+  if (s.state === 'available') {
+    bar.replaceChildren(el('span', { text: `มีเวอร์ชันใหม่ ${s.version}` }),
+      barButton('อัปเดตเลย', () => { bar.replaceChildren(el('span', { text: 'กำลังเริ่มดาวน์โหลด...' })); window.api.downloadUpdate(); }), later);
+  } else if (s.state === 'downloading') {
+    bar.replaceChildren(el('span', { text: `กำลังดาวน์โหลดอัปเดต ${s.percent}%` }));
+  } else if (s.state === 'ready') {
+    bar.replaceChildren(el('span', { text: `ดาวน์โหลดเวอร์ชัน ${s.version} เรียบร้อยแล้ว` }), barButton('ติดตั้งและรีสตาร์ท', () => window.api.installUpdate()), later);
   }
 });
 
