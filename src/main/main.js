@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const XLSX = require('xlsx');
+const tools = require('./tools');
 const { validateFiles } = require('../core/validator');
 
 const MAX_FILES = 20;
@@ -96,6 +97,7 @@ ipcMain.handle('download-update', () => updater && updater.downloadUpdate().catc
 ipcMain.handle('install-update', () => updater && updater.quitAndInstall());
 
 app.whenReady().then(() => {
+  tools.register(() => win);
   createWindow();
   setupUpdater();
   app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createWindow());

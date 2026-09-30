@@ -13,13 +13,20 @@
   <header class="topbar">
     <div class="topbar-in">
       <span class="app-name">ตรวจสอบไฟล์ผลตรวจปอด</span>
-      <span class="app-note">Spirometry · ตรวจในเครื่องนี้เท่านั้น ไม่แก้ไขไฟล์ ไม่ส่งข้อมูลออกอินเทอร์เน็ต</span>
       <span id="appVersion" class="app-version"></span>
       <button id="updateCheck" class="linkbtn" type="button">ตรวจสอบอัปเดต</button>
     </div>
   </header>
 
-  <main>
+  <nav class="tabs" aria-label="เมนู">
+    <div class="tabs-in">
+      <button class="tab active" type="button" data-page="check">ตรวจไฟล์ผลตรวจปอด</button>
+      <button class="tab" type="button" data-page="tools">เครื่องมือ</button>
+    </div>
+  </nav>
+
+  <main id="page-check">
+    <p class="page-note">Spirometry · ตรวจในเครื่องนี้เท่านั้น ไม่แก้ไขไฟล์ ไม่ส่งข้อมูลออกอินเทอร์เน็ต</p>
     <section id="drop" class="drop" tabindex="0" role="button" aria-label="เลือกไฟล์ผลตรวจ">
       <div class="drop-main">ลากไฟล์ผลตรวจมาวางที่นี่ หรือ <u>เลือกจากเครื่อง</u></div>
       <div class="drop-hint">.xls .xlsx .csv · ไม่เกิน 20 ไฟล์ · ไฟล์ละไม่เกิน 10 MB</div>
@@ -43,7 +50,16 @@
       <div id="cards"></div>
     </section>
   </main>
+
+  <main id="page-tools" hidden>
+    <div class="tools-head">
+      <p class="page-note">โปรแกรมและเว็บที่ใช้ร่วมกัน ดาวน์โหลดจาก GitHub ของ SEMed</p>
+      <button id="toolsRefresh" class="linkbtn" type="button">โหลดรายการใหม่</button>
+    </div>
+    <div id="toolList" class="tool-list"></div>
+  </main>
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <script src="app.js"></script>
+  <script src="tools.js"></script>
 </body>
 </html>
