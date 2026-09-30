@@ -11,7 +11,7 @@
 | `npm test` | เทสต์ตรรกะตรวจ |
 | `npm run dist` | build ตัวติดตั้ง `.exe` ลงโฟลเดอร์ `dist/` (ไม่อัปโหลด) |
 | `npm run release` | build แล้วอัปโหลดขึ้น GitHub Releases |
-| `npm run icon` | สร้างไอคอนใหม่ (`build/icon.ico`) |
+| `npm run icon` | สร้าง `build/icon.png` ใหม่จากโลโก้ `src/renderer/icon/Logosemed.png` |
 
 > ถ้าเปิดจาก VS Code แล้วขึ้น `Cannot read properties of undefined (reading 'handle')` ให้ล้างตัวแปร `ELECTRON_RUN_AS_NODE` ก่อน
 
