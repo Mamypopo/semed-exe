@@ -1,8 +1,8 @@
 {
   "name": "spirometry-checker",
-  "productName": "ตรวจสอบไฟล์ผลตรวจปอด",
+  "productName": "SEMed Tools",
   "version": "1.0.2",
-  "description": "ตรวจสอบความสมบูรณ์ของไฟล์ผลตรวจปอด (Spirometry)",
+  "description": "SEMed Tools — รวมเครื่องมือของ SEMed (ตรวจไฟล์ผลตรวจปอด และอื่นๆ)",
   "main": "src/main/main.js",
   "author": "SEMed",
   "license": "UNLICENSED",
@@ -18,7 +18,7 @@
   },
   "build": {
     "appId": "th.co.semed.spirometry-checker",
-    "productName": "ตรวจสอบไฟล์ผลตรวจปอด",
+    "productName": "SEMed Tools",
     "files": [
       "src/**/*",
       "package.json"
@@ -36,8 +36,8 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "shortcutName": "ตรวจสอบไฟล์ผลตรวจปอด",
-      "artifactName": "spirometry-checker-setup-${version}.exe"
+      "shortcutName": "SEMed Tools",
+      "artifactName": "semed-tools-setup-${version}.exe"
     },
     "publish": [
       {

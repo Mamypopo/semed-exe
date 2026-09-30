@@ -15,7 +15,7 @@ function createWindow() {
     height: 800,
     minWidth: 760,
     minHeight: 560,
-    title: 'ตรวจสอบไฟล์ผลตรวจปอด',
+    title: 'SEMed Tools',
     icon: path.join(__dirname, '..', '..', 'build', 'icon.png'),
     autoHideMenuBar: true,
     webPreferences: {
