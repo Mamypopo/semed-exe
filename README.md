@@ -40,12 +40,18 @@
 ถ้าออฟไลน์หรือเช็กไม่ได้ แอปยังใช้งานได้ตามปกติ และอัปเดตเฉพาะตอนที่รันแบบติดตั้งแล้ว (ไม่ทำงานตอน `npm start`)
 
 ### ขั้นตอนปล่อยเวอร์ชันใหม่ (สำหรับผู้ดูแล)
-1. แก้โค้ด, `npm test` ให้ผ่าน, commit
-2. เพิ่มเวอร์ชัน: `npm version patch` (หรือ `minor` / `major`)
-3. ตั้ง token ครั้งแรก: สร้าง GitHub Personal Access Token ที่มีสิทธิ์ `repo` แล้วตั้งในเทอร์มินัล
-   - PowerShell: `$env:GH_TOKEN = "ghp_xxx"`
-4. `npm run release` — build และอัปโหลด `spirometry-checker-setup-X.Y.Z.exe`, `latest.yml`, `.blockmap` ขึ้น Release ให้เอง (เผยแพร่ทันที)
-5. `git push --follow-tags` — ส่งโค้ดและ tag ขึ้น GitHub
+ตั้งค่าครั้งแรก: สร้าง GitHub token (Fine-grained: Contents Read and write, หรือ classic: `repo`) แล้วคัดลอก `.env.example` เป็น `.env` ใส่ `GH_TOKEN=...` (ไฟล์ `.env` ไม่ขึ้น git)
+
+ทุกครั้งที่ปล่อย: commit โค้ดให้เรียบร้อยก่อน (working tree ต้องสะอาด) แล้วรันคำสั่งเดียว
+
+| คำสั่ง | ทำอะไร |
+|---|---|
+| `npm run ship` | patch (1.0.0 → 1.0.1) |
+| `npm run ship:minor` | minor (1.0.1 → 1.1.0) |
+| `npm run ship:major` | major (1.1.0 → 2.0.0) |
+
+แต่ละคำสั่งทำตามลำดับ: `npm test` → เพิ่มเลขเวอร์ชัน + tag → `git push --follow-tags` → build และอัปโหลด Release
+ถ้าขั้นไหนพัง (เช่นเทสต์ไม่ผ่าน) จะหยุดที่ขั้นนั้น
 
 เครื่องผู้ใช้ที่ติดตั้งไว้แล้วจะได้เวอร์ชันใหม่ในการเปิดแอปครั้งถัดไป
 

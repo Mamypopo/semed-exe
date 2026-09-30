@@ -11,7 +11,10 @@
     "test": "node --test test/*.test.js",
     "icon": "node scripts/make-icon.js",
     "dist": "electron-builder --win",
-    "release": "node --env-file-if-exists=.env node_modules/electron-builder/cli.js --win --publish always"
+    "release": "node --env-file-if-exists=.env node_modules/electron-builder/cli.js --win --publish always",
+    "ship": "npm test && npm version patch && git push --follow-tags && npm run release",
+    "ship:minor": "npm test && npm version minor && git push --follow-tags && npm run release",
+    "ship:major": "npm test && npm version major && git push --follow-tags && npm run release"
   },
   "build": {
     "appId": "th.co.semed.spirometry-checker",
