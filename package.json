@@ -1,7 +1,7 @@
 {
   "name": "spirometry-checker",
   "productName": "SEMed Tools",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "SEMed Tools — รวมเครื่องมือของ SEMed (ตรวจไฟล์ผลตรวจปอด และอื่นๆ)",
   "main": "src/main/main.js",
   "author": "SEMed",
