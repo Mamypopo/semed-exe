@@ -11,7 +11,7 @@
     "test": "node --test test/*.test.js",
     "icon": "node scripts/make-icon.js",
     "dist": "electron-builder --win",
-    "release": "electron-builder --win --publish always"
+    "release": "node --env-file-if-exists=.env node_modules/electron-builder/cli.js --win --publish always"
   },
   "build": {
     "appId": "th.co.semed.spirometry-checker",

@@ -9,3 +9,6 @@ ex/
 # เครื่องมือ/สกิลของ editor
 .agents/
 skills-lock.json
+
+# token ห้ามขึ้น git
+.env
