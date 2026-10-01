@@ -81,7 +81,7 @@ test('กติกาแถวและ CN', () => {
   assert.equal(byRow(7).message, 'FVC ว่าง');
   assert.equal(byRow(8).message, 'FEV1 "abc" ไม่ใช่ตัวเลข');
   assert.equal(byRow(9).message, 'Code ว่าง');
-  assert.equal(byRow(10).message, 'BestTrial "Y" ต้องเป็น X หรือเว้นว่าง');
+  assert.equal(byRow(10).message, 'BestTrial "Y" ต้องเป็น X, BEST หรือเว้นว่าง');
   assert.equal(byRow(11).message, 'Code "abc.17" ไม่ใช่รูปแบบ CN ที่ถูกต้อง');
   assert.ok(r.errors.some((e) => e.cn === '100' && e.message === 'ไม่มี BestTrial (X) จาก 2 แถว' && e.rowsText === '2–3'));
   assert.ok(r.errors.some((e) => e.cn === '200' && e.message === 'มี BestTrial (X) 2 แถว — ต้องมีแค่ 1' && e.rowsText === '4, 6'));
@@ -102,4 +102,20 @@ test('CN ซ้ำข้ามไฟล์ = คำเตือน ไม่ท�
   assert.equal(a.ok, true);
   assert.equal(a.warnings[0].message, 'พบ CN นี้ในไฟล์อื่นด้วย: b.csv');
   assert.equal(b.warnings.length, 1);
+});
+
+test('BestTrial รับ X, x, best, BEST (ไม่สนตัวพิมพ์) และปฏิเสธค่าอื่น', () => {
+  const r = validateFile(csv([
+    H,
+    ['1.17', 'best', '1', '1'], ['1.17', '', '1', '1'],
+    ['2.17', 'BEST', '1', '1'],
+    ['3.17', ' Best ', '1', '1'],
+    ['4.17', 'x', '1', '1'],
+    ['5.17', 'bests', '1', '1'],
+  ]), 'a.csv');
+  assert.equal(r.cnPassed, 4);
+  assert.equal(r.errors.filter((e) => e.message.startsWith('BestTrial "bests"')).length, 1);
+  // CN ที่มี best 2 แถว (ผสม X/best) ต้องนับเป็น 2
+  const d = validateFile(csv([H, ['9.17', 'X', '1', '1'], ['9.17', 'best', '1', '1']]), 'a.csv');
+  assert.ok(d.errors.some((e) => e.message === 'มี BestTrial (X) 2 แถว — ต้องมีแค่ 1'));
 });

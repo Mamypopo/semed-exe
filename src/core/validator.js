@@ -7,6 +7,8 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024;
 const REQUIRED = ['Code', 'BestTrial', 'FVC', 'FEV1'];
 const NUM_RE = /^-?\d+(\.\d+)?$/;
 const CN_RE = /^\d+$/;
+// ค่าใน BestTrial ที่ถือว่าเป็น "ครั้งที่ดีที่สุด": X หรือ BEST (ไม่สนตัวพิมพ์)
+const isBestMark = (v) => /^(x|best)$/i.test(v);
 
 function getExt(fileName) {
   const m = /\.([^.\\/]+)$/.exec(fileName || '');
@@ -155,7 +157,7 @@ function validateFile(buffer, fileName) {
     if (code === '') errs.push('Code ว่าง');
     if (!missing.includes('FVC') && fvc === '') errs.push('FVC ว่าง');
     if (!missing.includes('FEV1') && fev1 === '') errs.push('FEV1 ว่าง');
-    if (best !== '' && best.toUpperCase() !== 'X') errs.push(`BestTrial "${best}" ต้องเป็น X หรือเว้นว่าง`);
+    if (best !== '' && !isBestMark(best)) errs.push(`BestTrial "${best}" ต้องเป็น X, BEST หรือเว้นว่าง`);
     if (fvc !== '' && !NUM_RE.test(fvc)) errs.push(`FVC "${fvc}" ไม่ใช่ตัวเลข`);
     if (fev1 !== '' && !NUM_RE.test(fev1)) errs.push(`FEV1 "${fev1}" ไม่ใช่ตัวเลข`);
     let cn = '';
@@ -166,7 +168,7 @@ function validateFile(buffer, fileName) {
     }
     if (cn) {
       if (!cnRows.has(cn)) cnRows.set(cn, []);
-      cnRows.get(cn).push({ no: r.no, isX: best.toUpperCase() === 'X' });
+      cnRows.get(cn).push({ no: r.no, isX: isBestMark(best) });
     }
     if (errs.length) {
       if (cn) failedCn.add(cn);
