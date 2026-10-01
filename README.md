@@ -9,7 +9,8 @@
 | `npm start` | รันแอปเพื่อทดสอบ |
 | `npm test` | เทสต์ตรรกะตรวจ |
 | `npm run dist` | build ตัวติดตั้ง `.exe` ลงโฟลเดอร์ `dist/` (ไม่อัปโหลด) |
-| `npm run release` | build แล้วอัปโหลดขึ้น GitHub Releases |
+| `npm run release` | build แล้วอัปโหลดขึ้น GitHub Releases (สคริปต์ `scripts/release.js` ทำทีละไฟล์ กัน Release ซ้ำ) |
+| `npm run release:check` | ตรวจ Release ของเวอร์ชันปัจจุบันบน GitHub ว่ามีไฟล์ครบ 3 ไฟล์และ `latest.yml` ตรงเวอร์ชัน (ไม่ต้องมี token) |
 | `npm run icon` | สร้าง `build/icon.png` ใหม่จากโลโก้ `src/renderer/icon/Logosemed.png` |
 
 > ถ้าเปิดจาก VS Code แล้วขึ้น `Cannot read properties of undefined (reading 'handle')` ให้ล้างตัวแปร `ELECTRON_RUN_AS_NODE` ก่อน
@@ -61,6 +62,7 @@
 
 แต่ละคำสั่งทำตามลำดับ: `npm test` → เพิ่มเลขเวอร์ชัน + tag → `git push --follow-tags` → build และอัปโหลด Release
 ถ้าขั้นไหนพัง (เช่นเทสต์ไม่ผ่าน) จะหยุดที่ขั้นนั้น
+ขั้นสุดท้ายสคริปต์จะตรวจ Release บน GitHub ให้เอง (ไฟล์ครบ, ไม่ใช่ draft, `latest.yml` ตรงเวอร์ชัน) ถ้าขึ้น ✓ แปลว่าผู้ใช้อัปเดตได้ ถ้าเกิดปัญหากลางทาง รัน `npm run release` ซ้ำได้ (จะใช้ Release เดิมและแทนที่ไฟล์)
 
 เครื่องผู้ใช้ที่ติดตั้งไว้แล้วจะได้เวอร์ชันใหม่ในการเปิดแอปครั้งถัดไป
 
