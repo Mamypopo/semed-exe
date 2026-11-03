@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คู่มือการใช้งาน SEMed Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16181d;--muted:#5f6672;--line:#dfe3e8;--soft:#f5f7f9;--brand:#0b7a55;--brand-bg:#e9f6f0;--bad:#b3261e;--bad-bg:#fdf0ee;--warn:#8a5a00;--warn-bg:#fdf4de;--note:#1f5fa8;--note-bg:#eaf2fc;--topbar:56px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:120px}
+body{margin:0;font-family:"IBM Plex Sans Thai","Leelawadee UI","Tahoma",sans-serif;color:var(--ink);background:#fff;line-height:1.75;font-size:16px}
+.topbar{position:sticky;top:0;z-index:50;height:var(--topbar);background:#16181d;color:#fff;display:flex;align-items:center;gap:12px;padding:0 20px}
+.topbar .title{font-weight:700;font-size:17px;white-space:nowrap}
+.topbar .sp{flex:1}
+.topbar input{width:260px;max-width:34vw;padding:7px 12px;border-radius:8px;border:1px solid #444;background:#262a31;color:#fff;font:inherit;font-size:14px}
+.topbar button,.btn{font:inherit;font-size:14px;cursor:pointer;border:1px solid #555;background:#262a31;color:#fff;border-radius:8px;padding:6px 12px}
+.topbar button:hover{background:#3a3f48}
+#hitcount{font-size:13px;color:#b8bec9;min-width:70px}
+.shortcuts{position:sticky;top:var(--topbar);z-index:40;background:var(--soft);border-bottom:1px solid var(--line);display:flex;gap:6px;padding:8px 20px;flex-wrap:wrap}
+.sc{position:relative}
+.sc>button{font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 14px;font-weight:600}
+.sc>button[aria-expanded=true]{background:var(--ink);color:#fff}
+.sc .menu{display:none;position:absolute;left:0;top:calc(100% + 6px);width:min(560px,92vw);max-height:70vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);padding:10px}
+.sc.open .menu{display:block}
+.menu a{display:block;text-decoration:none;color:var(--ink);padding:3px 8px;border-radius:6px;font-size:14px}
+.menu a:hover{background:var(--brand-bg)}
+.menu a.ch{font-weight:700;margin-top:6px}
+.menu a.sub{padding-left:26px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;max-width:1580px;margin:0 auto;padding:0 20px}
+#toc{position:sticky;top:calc(var(--topbar) + 52px);align-self:start;max-height:calc(100vh - 130px);overflow:auto;padding:16px 4px 40px 0;font-size:14px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:2px 8px;border-left:3px solid transparent}
+#toc a.h2{font-weight:700;color:var(--ink);margin-top:8px}
+#toc a.h3{padding-left:20px}
+#toc a.active{border-left-color:var(--brand);color:var(--brand);background:var(--brand-bg)}
+main{padding:20px 0 80px;min-width:0}
+.cover{border:1px solid var(--line);border-radius:14px;padding:70px 40px;text-align:center;background:linear-gradient(160deg,#0f2f26,#16181d);color:#fff;margin-bottom:30px;display:flex;flex-direction:column;justify-content:center;min-height:360px}
+.cover h1{font-size:44px;margin:0 0 10px}
+.cover .sub{font-size:20px;opacity:.9}
+.cover .meta{margin-top:34px;font-size:15px;opacity:.75}
+.chapter{margin-bottom:56px}
+.chapter h2{font-size:28px;border-bottom:3px solid var(--brand);padding-bottom:8px;margin:0 0 18px;display:flex;align-items:center;gap:14px}
+.num{display:inline-flex;min-width:40px;height:40px;align-items:center;justify-content:center;background:var(--brand);color:#fff;border-radius:10px;font-size:22px;padding:0 8px}
+h3{font-size:21px;margin:34px 0 8px}
+h4{font-size:17px;margin:20px 0 6px}
+p{margin:8px 0}
+code,kbd{font-family:Consolas,monospace;background:#eef0f3;border-radius:5px;padding:1px 6px;font-size:.92em}
+.ui{font-weight:700;background:#eef0f3;border-radius:5px;padding:0 6px;white-space:nowrap}
+.tblwrap{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--soft)}
+.req{color:var(--bad);font-weight:700}
+.box{border-left:5px solid;border-radius:8px;padding:10px 14px;margin:14px 0;page-break-inside:avoid}
+.box>b:first-child{display:block;margin-bottom:2px}
+.tip{background:var(--brand-bg);border-color:var(--brand)}
+.warn{background:var(--warn-bg);border-color:#d99a00}
+.note{background:var(--note-bg);border-color:var(--note)}
+.danger{background:var(--bad-bg);border-color:var(--bad)}
+.perm{display:inline-block;font:12px Consolas,monospace;background:#16181d;color:#fff;border-radius:5px;padding:1px 7px;vertical-align:middle;margin-left:8px}
+ol.steps{padding-left:26px}ol.steps li{margin:6px 0}
+figure.fig{margin:18px 0;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;page-break-inside:avoid}
+figure.fig svg{width:100%;height:auto;display:block}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+mark{background:#ffe27a;padding:0 1px}
+mark.cur{background:#ff9f43}
+#totop{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:0;background:var(--brand);color:#fff;font-size:20px;cursor:pointer;display:none;z-index:60}
+@media(max-width:980px){
+ .layout{display:block}
+ #toc{position:static;max-height:240px;border:1px solid var(--line);border-radius:10px;padding:8px;margin-top:12px}
+ .topbar .title{font-size:15px}.topbar input{width:140px}
+ .cover h1{font-size:30px}
+}
+@media print{
+ @page{size:A4;margin:16mm 14mm}
+ .no-print,.topbar,.shortcuts,#toc,#totop{display:none!important}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body{font-size:11.5pt}
+ .layout{display:block;max-width:none;padding:0}
+ main{padding:0}
+ .cover{height:264mm;min-height:0;margin:0;border-radius:0;page-break-after:always;break-after:page}
+ .chapter{page-break-before:always;break-before:page;margin:0}
+ .chapter h2{margin-top:0}
+ table,.box,figure.fig,ol.steps li,tr{page-break-inside:avoid;break-inside:avoid}
+ h2,h3,h4{page-break-after:avoid;break-after:avoid}
+ .tblwrap{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div class="topbar no-print">
+  <span class="title">คู่มือ SEMed Tools</span>
+  <span class="sp"></span>
+  <input id="q" type="search" placeholder="ค้นหาในคู่มือ (กด / )" aria-label="ค้นหาในคู่มือ">
+  <span id="hitcount"></span>
+  <button id="btnPdf" type="button">Export PDF</button>
+  <button id="btnDoc" type="button">Export Word</button>
+</div>
+<nav class="shortcuts no-print" id="shortcuts" aria-label="เมนูลัด"></nav>
+
+<div class="layout">
+<aside id="toc" class="no-print" aria-label="สารบัญ"></aside>
+<main id="manual">
+
+<div class="cover" id="cover">
+  <h1>คู่มือการใช้งาน SEMed Tools</h1>
+  <div class="sub">แอปรวมเครื่องมือของ SEMed สำหรับ Windows</div>
+  <div class="meta">ตรวจไฟล์ผลตรวจปอด · ดาวน์โหลดโปรแกรมอื่น · อัปเดตอัตโนมัติ<br>เขียนจากแอปเวอร์ชัน 1.0.6</div>
+</div>
+
+<section class="chapter" id="ch0" data-group="เริ่มต้น">
+<h2><span class="num">0</span>เริ่มต้นอ่านคู่มือ</h2>
+<h3 id="s0-1">0.1 แอปนี้ทำอะไรได้</h3>
+<p><b>SEMed Tools</b> เป็นโปรแกรมบนคอมพิวเตอร์ Windows ที่รวมเครื่องมือของ SEMed ไว้ที่เดียว ปัจจุบันมี 2 หน้า:</p>
+<div class="tblwrap"><table>
+<tr><th>แท็บ</th><th>ใช้ทำอะไร</th><th>ดูบท</th></tr>
+<tr><td><span class="ui">ตรวจไฟล์ผลตรวจปอด</span></td><td>ตรวจว่าไฟล์ผลตรวจปอด (Spirometry) ชนิด .xls .xlsx .csv กรอกครบและถูกรูปแบบหรือไม่ แล้วส่งออกรายการที่ผิดเป็น Excel/CSV</td><td><a href="#ch2">บทที่ 2</a></td></tr>
+<tr><td><span class="ui">โปรแกรมอื่น</span></td><td>ดาวน์โหลดโปรแกรมของ SEMed (เช่น SEMed Scanner, โปรแกรมอ่านบัตรประชาชน) หรือเปิดเว็บเครื่องมือ (สร้าง QR Code)</td><td><a href="#ch3">บทที่ 3</a></td></tr>
+</table></div>
+<div class="box note"><b>หมายเหตุ</b>การตรวจไฟล์ทำในเครื่องของคุณเท่านั้น แอปไม่แก้ไขไฟล์ต้นฉบับ และไม่ส่งข้อมูลในไฟล์ออกอินเทอร์เน็ต (ตามที่ระบุไว้บนหน้าจอ)</div>
+
+<h3 id="s0-2">0.2 สัญลักษณ์ที่ใช้ในคู่มือ</h3>
+<div class="box tip"><b>เคล็ดลับ</b>วิธีที่ทำให้งานเร็วหรือสะดวกขึ้น</div>
+<div class="box warn"><b>ข้อควรระวัง</b>สิ่งที่ควรตรวจสอบก่อนทำต่อ เพื่อไม่ให้เกิดความผิดพลาด</div>
+<div class="box note"><b>หมายเหตุ</b>ข้อมูลเพิ่มเติมที่ควรทราบ</div>
+<div class="box danger"><b>อันตราย / ย้อนกลับไม่ได้</b>การกระทำที่แก้คืนไม่ได้ หรือกระทบข้อมูลสำคัญ</div>
+<p>ชื่อปุ่มและข้อความที่ปรากฏบนหน้าจอจะแสดงเป็นตัวหนาในกรอบ เช่น <span class="ui">ตรวจสอบ</span> และเขียนตามที่แอปแสดงจริง</p>
+<div class="box note"><b>ภาพประกอบเป็นภาพจำลอง</b>ภาพทุกภาพในคู่มือนี้วาดขึ้นตามโครงสร้างหน้าจอในโปรแกรม ไม่ใช่ภาพถ่ายหน้าจอจริง ชื่อไฟล์ เลข CN และตัวเลขในภาพเป็นข้อมูลสมมติ</div>
+
+<h3 id="s0-3">0.3 สิทธิ์การใช้งาน</h3>
+<p>แอปนี้ <b>ไม่มีระบบล็อกอินและไม่แบ่งสิทธิ์ผู้ใช้</b> ทุกคนที่ติดตั้งแอปจะเห็นเมนูเหมือนกันทั้งหมด จึงไม่มีรหัสสิทธิ์ในคู่มือนี้ ส่วนที่เป็นงานของผู้ดูแล (ปล่อยเวอร์ชัน เพิ่มเครื่องมือ) อยู่ใน <a href="#ch5">บทที่ 5</a> และทำผ่านโค้ดของโปรเจค ไม่ใช่ผ่านหน้าจอแอป</p>
+</section>
+
+<section class="chapter" id="ch1" data-group="เริ่มต้น">
+<h2><span class="num">1</span>ติดตั้งและโครงสร้างหน้าจอ</h2>
+<h3 id="s1-1">1.1 ติดตั้งแอป</h3>
+<ol class="steps">
+<li>รับไฟล์ตัวติดตั้งชื่อ <code>semed-tools-setup-เลขเวอร์ชัน.exe</code> จากผู้ดูแล</li>
+<li>ดับเบิลคลิกไฟล์ เลือกโฟลเดอร์ติดตั้งได้ (ตัวติดตั้งยอมให้เปลี่ยนโฟลเดอร์)</li>
+<li>เมื่อติดตั้งเสร็จ เปิดแอปจากทางลัดชื่อ <b>SEMed Tools</b></li>
+</ol>
+<div class="box warn"><b>ข้อควรระวัง</b>ตัวติดตั้งยังไม่ได้เซ็นชื่อดิจิทัล (code signing) Windows SmartScreen อาจแสดงคำเตือนตอนติดตั้งครั้งแรก — ให้ติดตั้งต่อได้หากไฟล์มาจากผู้ดูแลของ SEMed</div>
+<p>ติดตั้งครั้งเดียวพอ หลังจากนั้นแอปจะแจ้งเมื่อมีเวอร์ชันใหม่เอง (ดู <a href="#ch4">บทที่ 4</a>)</p>
+
+<h3 id="s1-2">1.2 โครงสร้างหน้าจอ</h3>
+<figure class="fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" width="900" height="320"><rect x="0" y="0" width="900" height="320" rx="0" fill="#ffffff" stroke="#d0d0d0" stroke-width="1"/><rect x="0" y="0" width="900" height="44" rx="0" fill="#ffffff" stroke="none" stroke-width="1"/><line x1="0" y1="44" x2="900" y2="44" stroke="#e6e6e6" stroke-width="1"/><text x="24" y="28" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="16" fill="#16181d" text-anchor="start" font-weight="bold">SEMed Tools</text><text x="130" y="28" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="start">v1.0.6</text><text x="876" y="28" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="end" text-decoration="underline">ตรวจสอบอัปเดต</text><rect x="0" y="44" width="900" height="44" rx="0" fill="#ffffff" stroke="none" stroke-width="1"/><line x1="0" y1="88" x2="900" y2="88" stroke="#e6e6e6" stroke-width="1"/><text x="24" y="72" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="start" font-weight="bold">ตรวจไฟล์ผลตรวจปอด</text><text x="236" y="72" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="start">โปรแกรมอื่น</text><rect x="24" y="85" width="160" height="3" rx="0" fill="#0a0a0a" stroke="none" stroke-width="1"/><text x="24" y="124" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="start">Spirometry · ตรวจในเครื่องนี้เท่านั้น ไม่แก้ไขไฟล์ ไม่ส่งข้อมูลออกอินเทอร์เน็ต</text><rect x="24" y="144" width="852" height="150" rx="10" fill="#fafafa" stroke="#9a9a9a" stroke-width="1" stroke-dasharray="6 4"/><text x="450" y="210" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="17" fill="#16181d" text-anchor="middle">ลากไฟล์ผลตรวจมาวางที่นี่ หรือ เลือกจากเครื่อง</text><text x="450" y="240" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="middle">.xls .xlsx .csv · ไม่เกิน 20 ไฟล์ · ไฟล์ละไม่เกิน 10 MB</text><circle cx="330" cy="22" r="11" fill="#d92d20"/><text x="330" y="27" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text><circle cx="200" cy="22" r="11" fill="#d92d20"/><text x="200" y="27" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text><circle cx="740" cy="22" r="11" fill="#d92d20"/><text x="740" y="27" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text><circle cx="420" cy="66" r="11" fill="#d92d20"/><text x="420" y="71" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text><circle cx="60" cy="164" r="11" fill="#d92d20"/><text x="60" y="169" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text></svg>
+<figcaption><b>ภาพที่ 1</b> โครงสร้างหน้าจอหลัก (ภาพจำลอง) — 1 ชื่อแอป · 2 เลขเวอร์ชัน · 3 ลิงก์ตรวจสอบอัปเดต · 4 แท็บเมนู · 5 พื้นที่ทำงานของหน้าที่เลือก</figcaption>
+</figure>
+<div class="tblwrap"><table>
+<tr><th>ส่วน</th><th>ข้อความบนหน้าจอ</th><th>หน้าที่</th></tr>
+<tr><td>แถบด้านบน</td><td>SEMed Tools, เลขเวอร์ชัน (เช่น v1.0.6), <span class="ui">ตรวจสอบอัปเดต</span></td><td>บอกเวอร์ชันที่ติดตั้งอยู่ และกดตรวจหาเวอร์ชันใหม่ได้ทุกเมื่อ</td></tr>
+<tr><td>แท็บเมนู</td><td><span class="ui">ตรวจไฟล์ผลตรวจปอด</span> · <span class="ui">โปรแกรมอื่น</span></td><td>สลับหน้าทำงาน แท็บที่เลือกอยู่จะถูกเน้น</td></tr>
+<tr><td>แถบอัปเดต</td><td>มีเวอร์ชันใหม่ ...</td><td>ปรากฏบนสุดของหน้าต่างเมื่อพบเวอร์ชันใหม่ (ดู <a href="#s4-2">4.2</a>)</td></tr>
+<tr><td>ข้อความแจ้งสั้นๆ (toast)</td><td>เช่น ส่งออกสำเร็จ: ...</td><td>ขึ้นชั่วคราวแล้วหายเองใน 6 วินาที บางข้อความมีปุ่มลัด เช่น <span class="ui">เปิดโฟลเดอร์</span></td></tr>
+</table></div>
+<div class="box note"><b>หมายเหตุ</b>หน้าต่างย่อได้เล็กสุดประมาณ 760×560 พิกเซล และธีมสีขาว/ดำจะตามการตั้งค่าโหมดมืดของ Windows</div>
+
+<h3 id="s1-3">1.3 รูปแบบการทำงานที่พบบ่อย</h3>
+<ul>
+<li><b>ลากแล้ววาง หรือคลิกเลือก</b> — ใช้กับกล่องเลือกไฟล์ในหน้าตรวจไฟล์</li>
+<li><b>ผลการตรวจเป็นการ์ดพับได้</b> — คลิกที่แถวของไฟล์เพื่อเปิด/ปิดรายละเอียด</li>
+<li><b>รายการยาวถูกย่อไว้</b> — ตารางแสดงก่อน 50 รายการ กด <span class="ui">แสดงทั้งหมด (จำนวน รายการ)</span> เพื่อดูที่เหลือ</li>
+<li><b>แอปไม่มีการลบข้อมูลของผู้ใช้</b> — จึงไม่มีหน้าต่างยืนยันการลบ</li>
+</ul>
+</section>
+
+<section class="chapter" id="ch2" data-group="การใช้งาน">
+<h2><span class="num">2</span>ตรวจไฟล์ผลตรวจปอด</h2>
+<h3 id="s2-1">2.1 วัตถุประสงค์และเมนูที่ใช้</h3>
+<p>ตรวจไฟล์ผลตรวจปอด (Spirometry) ก่อนนำไปใช้ต่อ ว่ามีคอลัมน์ครบ ค่าถูกรูปแบบ และแต่ละ CN มีผล <b>BestTrial</b> ที่ถูกต้องเพียง 1 แถว เมนู: แท็บ <span class="ui">ตรวจไฟล์ผลตรวจปอด</span> (เปิดอยู่เป็นหน้าแรกเมื่อเปิดแอป) ไม่ต้องมีสิทธิ์พิเศษ</p>
+
+<h3 id="s2-2">2.2 เลือกไฟล์ที่จะตรวจ</h3>
+<figure class="fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 362" width="900" height="362"><rect x="0" y="0" width="900" height="362" rx="0" fill="#ffffff" stroke="#d0d0d0" stroke-width="1"/><rect x="24" y="20" width="852" height="80" rx="10" fill="#fafafa" stroke="#9a9a9a" stroke-width="1" stroke-dasharray="6 4"/><text x="450" y="66" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="16" fill="#16181d" text-anchor="middle">ลากไฟล์ผลตรวจมาวางที่นี่ หรือ เลือกจากเครื่อง</text><circle cx="44" cy="40" r="11" fill="#d92d20"/><text x="44" y="45" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text><rect x="24" y="120" width="852" height="132" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="44" y="152" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start">ผลตรวจ_กลุ่ม1.xlsx</text><text x="856" y="152" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="end">84 KB</text><line x1="24" y1="164" x2="876" y2="164" stroke="#f0f0f0" stroke-width="1"/><text x="44" y="190" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start">ผลตรวจ_กลุ่ม2.csv</text><text x="856" y="190" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="end">31 KB</text><line x1="24" y1="202" x2="876" y2="202" stroke="#f0f0f0" stroke-width="1"/><text x="44" y="228" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start">ผลตรวจ_กลุ่ม3.xls</text><text x="856" y="228" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="end">1.2 MB</text><circle cx="888" cy="186" r="11" fill="#d92d20"/><text x="888" y="191" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text><rect x="24" y="274" width="110" height="38" rx="6" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/><text x="79.0" y="298.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">ตรวจสอบ</text><rect x="146" y="274" width="100" height="38" rx="6" fill="#ffffff" stroke="#bdbdbd" stroke-width="1"/><text x="196.0" y="298.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="middle">ล้างไฟล์</text><circle cx="79" cy="338" r="11" fill="#d92d20"/><text x="79" y="343" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text><circle cx="196" cy="338" r="11" fill="#d92d20"/><text x="196" y="343" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text></svg>
+<figcaption><b>ภาพที่ 2</b> เลือกไฟล์และเริ่มตรวจ (ภาพจำลอง) — 1 กล่องลากไฟล์มาวาง · 2 รายการไฟล์ที่เลือก (ชื่อและขนาด) · 3 ปุ่มตรวจสอบ · 4 ปุ่มล้างไฟล์</figcaption>
+</figure>
+<ol class="steps">
+<li>เปิดแท็บ <span class="ui">ตรวจไฟล์ผลตรวจปอด</span></li>
+<li>ลากไฟล์มาวางในกรอบ <span class="ui">ลากไฟล์ผลตรวจมาวางที่นี่ หรือ เลือกจากเครื่อง</span> หรือคลิกกรอบ (หรือกด Enter / Space เมื่อกรอบถูกเลือกอยู่) แล้วเลือกไฟล์จากเครื่อง</li>
+<li>ตรวจรายการไฟล์ที่ปรากฏ (ชื่อไฟล์และขนาด)</li>
+<li>กด <span class="ui">ตรวจสอบ</span> ปุ่มจะเปลี่ยนเป็น <span class="ui">กำลังตรวจ...</span> ชั่วครู่</li>
+<li>ผลการตรวจจะแสดงด้านล่าง (ดู <a href="#s2-4">2.4</a>)</li>
+</ol>
+<div class="tblwrap"><table>
+<tr><th>ข้อกำหนดของไฟล์</th><th>ค่า</th></tr>
+<tr><td>ชนิดไฟล์ที่รองรับ</td><td>.xls .xlsx .csv</td></tr>
+<tr><td>จำนวนไฟล์ต่อครั้ง</td><td>ไม่เกิน 20 ไฟล์</td></tr>
+<tr><td>ขนาดต่อไฟล์</td><td>ไม่เกิน 10 MB</td></tr>
+</table></div>
+<div class="box warn"><b>ข้อควรระวัง</b>การเลือกไฟล์ชุดใหม่จะ <b>แทนที่</b> ชุดเดิมและล้างผลการตรวจเก่าทันที ถ้าต้องการตรวจต่อเนื่องหลายชุด ให้ส่งออกผล (<a href="#s2-6">2.6</a>) ก่อนเลือกชุดใหม่</div>
+<div class="box note"><b>หมายเหตุ</b>ถ้าเลือกเกิน 20 ไฟล์ แอปจะตัดส่วนที่เกินออกและแจ้งว่า <i>เลือกได้สูงสุด 20 ไฟล์ — ตัดไฟล์ที่เกินออก N ไฟล์</i> ส่วนไฟล์ที่เกิน 10MB จะแจ้งว่า <i>ไฟล์ที่เกิน 10MB จะถูกรายงานว่าไม่สมบูรณ์: ชื่อไฟล์</i></div>
+<div class="box tip"><b>เคล็ดลับ</b>ถ้าลากไฟล์พลาดไปวางนอกกรอบ แอปจะไม่เปิดไฟล์นั้นทับหน้าต่าง ลากใหม่ได้เลย กด <span class="ui">ล้างไฟล์</span> เพื่อเริ่มใหม่</div>
+
+<h3 id="s2-3">2.3 โครงสร้างไฟล์ที่แอปคาดหวัง</h3>
+<ul>
+<li>แอปอ่านเฉพาะ <b>ชีตแรก</b> ของไฟล์ Excel และถือว่า <b>แถวที่ 1 คือหัวคอลัมน์</b></li>
+<li>หัวคอลัมน์ไม่สนตัวพิมพ์เล็ก/ใหญ่ ต้องมี 4 คอลัมน์นี้:</li>
+</ul>
+<div class="tblwrap"><table>
+<tr><th>คอลัมน์</th><th>บังคับ</th><th>กฎของค่า</th></tr>
+<tr><td><code>Code</code></td><td class="req">*</td><td>ห้ามว่าง ส่วนที่อยู่ก่อนจุดแรกต้องเป็นตัวเลขล้วน เรียกว่า <b>CN</b> เช่น <code>10234.1</code> → CN 10234</td></tr>
+<tr><td><code>BestTrial</code></td><td class="req">*</td><td>เว้นว่าง หรือเป็น <code>X</code> / <code>BEST</code> (ไม่สนตัวพิมพ์) เท่านั้น</td></tr>
+<tr><td><code>FVC</code></td><td class="req">*</td><td>ห้ามว่าง ต้องเป็นตัวเลข (ติดลบ/ทศนิยมได้)</td></tr>
+<tr><td><code>FEV1</code></td><td class="req">*</td><td>ห้ามว่าง ต้องเป็นตัวเลข (ติดลบ/ทศนิยมได้)</td></tr>
+</table></div>
+<p><b>กฎระดับ CN:</b> ในแต่ละ CN ต้องมีแถวที่ทำเครื่องหมาย BestTrial (X หรือ BEST) <b>แค่ 1 แถว</b> ไม่มี หรือมีมากกว่า 1 ถือว่าผิด</p>
+<div class="box note"><b>หมายเหตุ</b>เลขแถวที่แอปรายงานตรงกับเลขแถวใน Excel (แถวหัวคอลัมน์คือแถว 1) แถวที่ว่างทั้งแถวถูกข้าม และไฟล์ CSV รองรับตัวคั่น ; , หรือแท็บ (แอปเดาจากบรรทัดแรก) รวมถึงไฟล์ภาษาไทยแบบเก่า</div>
+
+<h3 id="s2-4">2.4 อ่านผลการตรวจ</h3>
+<figure class="fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 488" width="900" height="488"><rect x="0" y="0" width="900" height="488" rx="0" fill="#ffffff" stroke="#d0d0d0" stroke-width="1"/><text x="24" y="34" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start">ไฟล์ทั้งหมด 2  |  สมบูรณ์ 1  |  ไม่สมบูรณ์ 1</text><rect x="640" y="12" width="236" height="38" rx="6" fill="#ffffff" stroke="#bdbdbd" stroke-width="1"/><text x="758.0" y="36.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="middle">ส่งออกผลเป็น CSV/Excel</text><circle cx="500" cy="31" r="11" fill="#d92d20"/><text x="500" y="36" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text><circle cx="618" cy="31" r="11" fill="#d92d20"/><text x="618" y="36" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text><rect x="24" y="64" width="852" height="330" rx="8" fill="#ffffff" stroke="#e8b4ae" stroke-width="1"/><rect x="40" y="80" width="116" height="28" rx="14" fill="#fdf0ee" stroke="#b3261e" stroke-width="1"/><text x="98" y="99" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#b3261e" text-anchor="middle" font-weight="bold">ไม่สมบูรณ์</text><text x="176" y="99" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">ผลตรวจ_กลุ่ม1.xlsx</text><text x="520" y="90" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">แถว</text><text x="520" y="108" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">12</text><text x="590" y="90" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">CN</text><text x="590" y="108" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">4</text><text x="650" y="90" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">ผ่าน</text><text x="650" y="108" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">2</text><text x="720" y="90" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">ผิด</text><text x="720" y="108" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#b3261e" text-anchor="start" font-weight="bold">2</text><text x="790" y="90" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">คำเตือน</text><text x="790" y="108" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">1</text><circle cx="12" cy="94" r="11" fill="#d92d20"/><text x="12" y="99" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text><circle cx="500" cy="94" r="11" fill="#d92d20"/><text x="500" y="99" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text><text x="40" y="146" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#b3261e" text-anchor="start" font-weight="bold">รายการผิดพลาด 3 รายการ</text><rect x="40" y="158" width="820" height="28" rx="0" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/><text x="52" y="177" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start" font-weight="bold">แถว</text><text x="150" y="177" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start" font-weight="bold">CN</text><text x="260" y="177" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start" font-weight="bold">สาเหตุ</text><rect x="40" y="186" width="820" height="30" rx="0" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="52" y="206" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">3</text><text x="150" y="206" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">10234</text><text x="260" y="206" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">FVC ว่าง</text><rect x="40" y="216" width="820" height="30" rx="0" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="52" y="236" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">5–6</text><text x="150" y="236" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">10235</text><text x="260" y="236" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">มี BestTrial (X) 2 แถว — ต้องมีแค่ 1</text><rect x="40" y="246" width="820" height="30" rx="0" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="52" y="266" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">9</text><text x="150" y="266" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">10236</text><text x="260" y="266" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">BestTrial "Y" ต้องเป็น X, BEST หรือเว้นว่าง</text><text x="40" y="306" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#8a5a00" text-anchor="start" font-weight="bold">คำเตือน 1 รายการ</text><rect x="40" y="318" width="820" height="30" rx="0" fill="#fdf4de" stroke="#e6d4a0" stroke-width="1"/><text x="52" y="338" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">-</text><text x="150" y="338" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">10234</text><text x="260" y="338" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="start">พบ CN นี้ในไฟล์อื่นด้วย: ผลตรวจ_กลุ่ม2.csv</text><circle cx="888" cy="220" r="11" fill="#d92d20"/><text x="888" y="225" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text><rect x="24" y="412" width="852" height="56" rx="8" fill="#ffffff" stroke="#b5dccb" stroke-width="1"/><rect x="40" y="426" width="106" height="28" rx="14" fill="#e9f6f0" stroke="#0b7a55" stroke-width="1"/><text x="93" y="445" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#0b7a55" text-anchor="middle" font-weight="bold">สมบูรณ์</text><text x="166" y="445" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">ผลตรวจ_กลุ่ม2.csv</text><text x="520" y="436" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">แถว</text><text x="520" y="454" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">9</text><text x="590" y="436" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">CN</text><text x="590" y="454" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">3</text><text x="650" y="436" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">ผ่าน</text><text x="650" y="454" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">3</text><text x="720" y="436" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">ผิด</text><text x="720" y="454" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#9a9a9a" text-anchor="start" font-weight="bold">0</text><text x="790" y="436" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="11" fill="#6b6b6b" text-anchor="start">คำเตือน</text><text x="790" y="454" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="15" fill="#16181d" text-anchor="start" font-weight="bold">1</text><circle cx="12" cy="440" r="11" fill="#d92d20"/><text x="12" y="445" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">6</text></svg>
+<figcaption><b>ภาพที่ 3</b> ผลการตรวจ (ภาพจำลอง) — 1 สรุปรวม · 2 ปุ่มส่งออก · 3 สถานะของไฟล์ · 4 ตัวเลขสรุปต่อไฟล์ · 5 ตารางรายการผิดพลาดและคำเตือน · 6 ไฟล์ที่สมบูรณ์</figcaption>
+</figure>
+<ol class="steps">
+<li>บรรทัดสรุป: <b>ไฟล์ทั้งหมด</b> | <b>สมบูรณ์</b> | <b>ไม่สมบูรณ์</b></li>
+<li>การ์ดของแต่ละไฟล์ — ไฟล์ <b>ไม่สมบูรณ์ขึ้นก่อน</b> แล้วตามด้วยไฟล์ที่สมบูรณ์ คลิกที่การ์ดเพื่อเปิด/ปิดรายละเอียด</li>
+<li>ตัวเลขบนการ์ด: <b>แถว</b> (จำนวนแถวข้อมูล) · <b>CN</b> (จำนวน CN) · <b>ผ่าน</b> · <b>ผิด</b> · <b>คำเตือน</b></li>
+<li>ในการ์ดที่เปิด: ตาราง <b>แถว / CN / สาเหตุ</b> หัวข้อ <i>รายการผิดพลาด N รายการ</i> และ <i>คำเตือน N รายการ</i> ถ้าไม่มีอะไรเลยจะขึ้น <i>ไม่พบปัญหา</i></li>
+</ol>
+<div class="box note"><b>หมายเหตุ</b><b>คำเตือน</b> (เช่น พบ CN เดียวกันในไฟล์อื่นด้วย) ไม่ทำให้ไฟล์เป็น "ไม่สมบูรณ์" — ไฟล์จะถูกนับว่า "ไม่สมบูรณ์" ก็ต่อเมื่อมีรายการผิดพลาดหรือปัญหาระดับไฟล์ ควรอ่านคำเตือนเสมอ เพราะอาจเป็น CN ซ้ำจริง</div>
+
+<h3 id="s2-5">2.5 ข้อความผิดพลาดที่พบบ่อยและวิธีแก้</h3>
+<h4>ปัญหาระดับไฟล์ (แสดงเป็นแถบสีแดงบนการ์ด)</h4>
+<div class="tblwrap"><table>
+<tr><th>ข้อความ</th><th>สาเหตุ / วิธีแก้</th></tr>
+<tr><td>ไม่รองรับไฟล์ .นามสกุล (รองรับเฉพาะ .xls, .xlsx, .csv)</td><td>เลือกชนิดไฟล์ผิด — บันทึกใหม่เป็น .xlsx หรือ .csv</td></tr>
+<tr><td>ไม่รองรับไฟล์ที่ไม่มีนามสกุล (...)</td><td>ไฟล์ไม่มีนามสกุล — เติม .xlsx/.csv ให้ตรงกับชนิดจริง</td></tr>
+<tr><td>ไฟล์ใหญ่เกิน 10MB</td><td>แยกไฟล์เป็นหลายไฟล์ย่อย</td></tr>
+<tr><td>ไฟล์ไม่มีข้อมูล / ไฟล์ไม่มีข้อมูล (มีแต่หัวคอลัมน์)</td><td>ไฟล์ว่าง หรือมีแต่แถวหัวคอลัมน์ — ตรวจว่าเลือกไฟล์ถูก</td></tr>
+<tr><td>อ่านไฟล์ไม่ได้: เนื้อหาไม่ใช่ไฟล์ .xlsx จริง (อาจเปลี่ยนแค่นามสกุล)</td><td>ไฟล์ถูกเปลี่ยนนามสกุลโดยไม่ได้แปลงจริง — เปิดด้วย Excel แล้ว "บันทึกเป็น" ชนิดที่ต้องการ</td></tr>
+<tr><td>อ่านไฟล์ไม่ได้: ไม่ใช่ไฟล์ CSV จริง (พบข้อมูลไบนารี)</td><td>เช่นเดียวกัน — บันทึกเป็น CSV จริงจาก Excel</td></tr>
+<tr><td>อ่านไฟล์ไม่ได้: ไม่พบชีตในไฟล์</td><td>ไฟล์ Excel ไม่มีชีต — ตรวจไฟล์ต้นฉบับ</td></tr>
+<tr><td>ไม่พบคอลัมน์: ชื่อคอลัมน์</td><td>หัวคอลัมน์ในแถว 1 ไม่ครบ/สะกดผิด (ต้องมี Code, BestTrial, FVC, FEV1) ถ้าขาด <code>Code</code> แอปจะหยุดตรวจแถวต่อ ถ้าขาดคอลัมน์อื่น CN ทั้งหมดจะนับเป็น "ผิด"</td></tr>
+</table></div>
+<h4>ปัญหาระดับแถว / CN (อยู่ในตาราง)</h4>
+<div class="tblwrap"><table>
+<tr><th>ข้อความในคอลัมน์ "สาเหตุ"</th><th>วิธีแก้</th></tr>
+<tr><td>Code ว่าง</td><td>กรอก Code ในแถวนั้น</td></tr>
+<tr><td>FVC ว่าง / FEV1 ว่าง</td><td>กรอกค่า</td></tr>
+<tr><td>BestTrial "ค่า" ต้องเป็น X, BEST หรือเว้นว่าง</td><td>แก้เป็น X หรือ BEST หรือลบทิ้ง</td></tr>
+<tr><td>FVC "ค่า" ไม่ใช่ตัวเลข / FEV1 "ค่า" ไม่ใช่ตัวเลข</td><td>ใส่ตัวเลขล้วน ไม่มีหน่วยหรือตัวอักษร</td></tr>
+<tr><td>Code "ค่า" ไม่ใช่รูปแบบ CN ที่ถูกต้อง</td><td>ส่วนก่อนจุดแรกของ Code ต้องเป็นตัวเลขล้วน</td></tr>
+<tr><td>ไม่มี BestTrial (X) จาก N แถว</td><td>ทำเครื่องหมาย X หรือ BEST ในแถวที่ดีที่สุด 1 แถวของ CN นั้น</td></tr>
+<tr><td>มี BestTrial (X) N แถว — ต้องมีแค่ 1</td><td>เหลือเครื่องหมายไว้แถวเดียว (ตารางระบุเลขแถวที่ซ้ำ)</td></tr>
+</table></div>
+<h4>คำเตือน</h4>
+<div class="tblwrap"><table>
+<tr><th>ข้อความ</th><th>ความหมาย</th></tr>
+<tr><td>พบ CN นี้ในไฟล์อื่นด้วย: ชื่อไฟล์</td><td>CN เดียวกันอยู่ในหลายไฟล์ที่ตรวจพร้อมกัน — ตรวจว่าซ้ำจริงหรือเป็นผู้รับบริการคนละคน</td></tr>
+</table></div>
+<div class="box tip"><b>เคล็ดลับ</b>แก้ไฟล์ใน Excel แล้วลากไฟล์เดิมเข้ามาตรวจซ้ำได้เลย แอปไม่ได้แก้ไฟล์ให้ ต้องแก้ที่ต้นฉบับเอง</div>
+
+<h3 id="s2-6">2.6 ส่งออกผลการตรวจ</h3>
+<ol class="steps">
+<li>หลังตรวจเสร็จ กด <span class="ui">ส่งออกผลเป็น CSV/Excel</span></li>
+<li>ในหน้าต่างบันทึก (ชื่อเริ่มต้น <code>ผลตรวจสอบไฟล์ผลตรวจปอด.xlsx</code>) เลือกชนิด <b>Excel</b> หรือ <b>CSV</b> แล้วเลือกที่เก็บ</li>
+<li>เมื่อสำเร็จจะขึ้น <i>ส่งออกสำเร็จ: ชื่อไฟล์</i> กด <span class="ui">เปิดโฟลเดอร์</span> เพื่อไปที่ไฟล์</li>
+</ol>
+<p>ไฟล์ที่ส่งออกมีคอลัมน์ <b>ไฟล์ / ประเภท / แถว / CN / สาเหตุ</b> โดยประเภทคือ "ไฟล์" (ปัญหาระดับไฟล์) "ผิดพลาด" หรือ "คำเตือน" ใช้ชีตชื่อ "ผลตรวจ" หากกดยกเลิกในหน้าต่างบันทึกจะไม่มีอะไรเกิดขึ้น ถ้าบันทึกไม่ได้ จะขึ้น <i>ส่งออกไม่สำเร็จ: ...</i></p>
+<div class="box warn"><b>ข้อควรระวัง</b>ถ้าบันทึกทับไฟล์ชื่อเดิมที่เปิดค้างอยู่ใน Excel อาจบันทึกไม่ได้ ให้ปิดไฟล์นั้นก่อนหรือตั้งชื่อใหม่ (ยังไม่ได้ทดสอบกับกรณีนี้โดยตรง)</div>
+</section>
+
+<section class="chapter" id="ch3" data-group="การใช้งาน">
+<h2><span class="num">3</span>โปรแกรมอื่น (ดาวน์โหลดโปรแกรม / เปิดเว็บ)</h2>
+<h3 id="s3-1">3.1 วัตถุประสงค์และเมนูที่ใช้</h3>
+<p>รวมโปรแกรมและเว็บเครื่องมือของ SEMed ไว้ให้ดาวน์โหลดหรือเปิดจากที่เดียว เมนู: แท็บ <span class="ui">โปรแกรมอื่น</span> ต้องเชื่อมต่ออินเทอร์เน็ต (เพื่อดึงรายการจาก GitHub) ไม่ต้องมีสิทธิ์พิเศษ</p>
+<h3 id="s3-2">3.2 รายการในหน้านี้</h3>
+<figure class="fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 372" width="900" height="372"><rect x="0" y="0" width="900" height="372" rx="0" fill="#ffffff" stroke="#d0d0d0" stroke-width="1"/><text x="24" y="34" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="start">โปรแกรมและเว็บที่ใช้ร่วมกัน ดาวน์โหลดจาก GitHub ของ SEMed</text><text x="876" y="34" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#16181d" text-anchor="end" text-decoration="underline">โหลดรายการใหม่</text><circle cx="716" cy="30" r="11" fill="#d92d20"/><text x="716" y="35" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text><rect x="24" y="56" width="852" height="92" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="44" y="86" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="16" fill="#16181d" text-anchor="start" font-weight="bold">SEMed Scanner</text><text x="44" y="110" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="start">โปรแกรมสแกนของ SEMed</text><text x="44" y="134" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="12" fill="#6b6b6b" text-anchor="start">ล่าสุด v1.2.0 · 85.3 MB · ตรวจ SHA-256 · ติดตั้งอยู่ v1.1.0 · มีเวอร์ชันใหม่</text><rect x="700" y="82" width="156" height="38" rx="6" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/><text x="778.0" y="106.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">อัปเดตเป็น v1.2.0</text><rect x="24" y="160" width="852" height="92" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="44" y="190" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="16" fill="#16181d" text-anchor="start" font-weight="bold">โปรแกรมอ่านบัตรประชาชน</text><text x="44" y="214" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="start">ไฟล์ .exe รันได้เลย ไม่ต้องติดตั้ง (IDCard_reader.exe)</text><text x="44" y="238" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="12" fill="#6b6b6b" text-anchor="start">ล่าสุด v1.0 · 12.4 MB · ตรวจ SHA-256</text><rect x="700" y="186" width="156" height="38" rx="6" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/><text x="778.0" y="210.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">ดาวน์โหลด</text><rect x="24" y="264" width="852" height="92" rx="8" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/><text x="44" y="294" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="16" fill="#16181d" text-anchor="start" font-weight="bold">สร้าง QR Code</text><text x="44" y="318" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" fill="#6b6b6b" text-anchor="start">เว็บสร้าง QR Code (เปิดในเบราว์เซอร์)</text><rect x="700" y="290" width="156" height="38" rx="6" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/><text x="778.0" y="314.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">เปิดเว็บ</text><circle cx="380" cy="82" r="11" fill="#d92d20"/><text x="380" y="87" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text><circle cx="12" cy="134" r="11" fill="#d92d20"/><text x="12" y="139" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text><circle cx="884" cy="101" r="11" fill="#d92d20"/><text x="884" y="106" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text><circle cx="884" cy="309" r="11" fill="#d92d20"/><text x="884" y="314" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text></svg>
+<figcaption><b>ภาพที่ 4</b> หน้าโปรแกรมอื่น (ภาพจำลอง ตัวเลขเวอร์ชัน/ขนาดเป็นข้อมูลสมมติ) — 1 ปุ่มโหลดรายการใหม่ · 2 ชื่อและคำอธิบายโปรแกรม · 3 ข้อมูลเวอร์ชัน/ขนาด/สถานะการติดตั้ง · 4 ปุ่มดำเนินการ · 5 เครื่องมือแบบเว็บ</figcaption>
+</figure>
+<p>รายการปัจจุบัน (ตามโค้ด เวอร์ชัน 1.0.6):</p>
+<div class="tblwrap"><table>
+<tr><th>ชื่อ</th><th>ชนิด</th><th>คำอธิบายบนหน้าจอ</th></tr>
+<tr><td>SEMed Scanner</td><td>ตัวติดตั้ง (.exe)</td><td>โปรแกรมสแกนของ SEMed</td></tr>
+<tr><td>โปรแกรมอ่านบัตรประชาชน</td><td>โปรแกรมพกพา (.exe รันได้เลย)</td><td>ไฟล์ .exe รันได้เลย ไม่ต้องติดตั้ง (IDCard_reader.exe)</td></tr>
+<tr><td>สร้าง QR Code</td><td>เว็บ</td><td>เว็บสร้าง QR Code (เปิดในเบราว์เซอร์)</td></tr>
+</table></div>
+<div class="box note"><b>หมายเหตุ</b>รายการเครื่องมือกำหนดไว้ในโค้ดของแอป ผู้ใช้เพิ่มหรือลบเองไม่ได้ ถ้าต้องการเพิ่ม ดู <a href="#s5-2">5.2</a></div>
+
+<h3 id="s3-3">3.3 ดาวน์โหลดและเปิดโปรแกรม</h3>
+<ol class="steps">
+<li>เปิดแท็บ <span class="ui">โปรแกรมอื่น</span> ระหว่างรอจะเห็น <i>กำลังโหลดรายการ...</i></li>
+<li>ดูข้อมูลใต้ชื่อโปรแกรม: <i>ล่าสุด เวอร์ชัน · ขนาด MB · ตรวจ SHA-256</i> (ข้อความ "ตรวจ SHA-256" แสดงเมื่อ GitHub มีค่ารับรองไฟล์) และสถานะ <i>ติดตั้งแล้ว vX</i> หรือ <i>ติดตั้งอยู่ vX · มีเวอร์ชันใหม่</i></li>
+<li>กดปุ่มของโปรแกรม ปุ่มจะแสดง <span class="ui">กำลังโหลด N%</span></li>
+<li>เมื่อเสร็จ จะขึ้น <i>ดาวน์โหลดสำเร็จ: ชื่อไฟล์</i> พร้อมปุ่ม <span class="ui">แสดงในโฟลเดอร์</span> และปุ่มโปรแกรมเปลี่ยนเป็น <span class="ui">เปิดตัวติดตั้ง</span> (หรือ <span class="ui">เปิดโปรแกรม</span> สำหรับโปรแกรมพกพา)</li>
+<li>กดปุ่มนั้นเพื่อเปิดไฟล์ Windows อาจถามสิทธิ์ผู้ดูแลเครื่อง</li>
+</ol>
+<p>ไฟล์ถูกบันทึกในโฟลเดอร์ <b>Downloads</b> ของเครื่อง</p>
+<div class="tblwrap"><table>
+<tr><th>ปุ่ม</th><th>เมื่อไหร่ที่เห็น</th></tr>
+<tr><td><span class="ui">ดาวน์โหลด</span></td><td>ยังไม่ได้ติดตั้งโปรแกรมนี้ (หรือแอปตรวจไม่พบ)</td></tr>
+<tr><td><span class="ui">อัปเดตเป็น เวอร์ชัน</span></td><td>ติดตั้งอยู่แล้วแต่มีเวอร์ชันใหม่กว่า</td></tr>
+<tr><td><span class="ui">ติดตั้งใหม่</span></td><td>ติดตั้งแล้วและเป็นเวอร์ชันล่าสุด</td></tr>
+<tr><td><span class="ui">เปิดเว็บ</span></td><td>เครื่องมือแบบเว็บ — เปิดในเบราว์เซอร์ของเครื่อง</td></tr>
+<tr><td><span class="ui">ไม่พร้อมใช้งาน</span> (กดไม่ได้)</td><td>ดึงข้อมูลไม่ได้ ดูเหตุผลข้างๆ (3.5)</td></tr>
+</table></div>
+<div class="box note"><b>หมายเหตุ</b>สถานะ "ติดตั้งแล้ว" ตรวจจากรายการโปรแกรมที่ Windows ลงทะเบียนไว้ (เฉพาะโปรแกรมที่กำหนดชื่อไว้ เช่น SEMed Scanner) โปรแกรมพกพาไม่มีสถานะนี้</div>
+
+<h3 id="s3-4">3.4 ความปลอดภัยของไฟล์ที่ดาวน์โหลด</h3>
+<ul>
+<li>แอปโหลดได้เฉพาะไฟล์จาก Release ของที่เก็บ GitHub ที่ SEMed กำหนดไว้เท่านั้น</li>
+<li>ถ้า GitHub มีค่า SHA-256 รับรอง แอปจะตรวจให้ ถ้าไม่ตรงจะลบไฟล์ทิ้งและแจ้งให้ทราบ</li>
+<li>แอปเปิดได้เฉพาะไฟล์ที่ตัวเองเพิ่งดาวน์โหลดในรอบการใช้งานนั้น</li>
+</ul>
+
+<h3 id="s3-5">3.5 ข้อความที่พบบ่อยและวิธีแก้</h3>
+<div class="tblwrap"><table>
+<tr><th>ข้อความ</th><th>ความหมาย / วิธีแก้</th></tr>
+<tr><td>เชื่อมต่อ GitHub ไม่ได้</td><td>ไม่มีอินเทอร์เน็ต หรือ GitHub ไม่ตอบ — ตรวจเครือข่ายแล้วกด <span class="ui">โหลดรายการใหม่</span></td></tr>
+<tr><td>ยังไม่มี Release</td><td>ผู้ดูแลยังไม่ได้อัปโหลดตัวติดตั้งของโปรแกรมนั้น — แจ้งผู้ดูแล</td></tr>
+<tr><td>Release นี้ไม่มีตัวติดตั้ง .exe</td><td>เช่นเดียวกัน — แจ้งผู้ดูแลให้แนบไฟล์ .exe</td></tr>
+<tr><td>ดาวน์โหลดไม่สำเร็จ: ไม่พบตัวติดตั้ง</td><td>รายการหมดอายุหรือโปรแกรมไม่พร้อม — กด <span class="ui">โหลดรายการใหม่</span> แล้วลองใหม่</td></tr>
+<tr><td>ดาวน์โหลดไม่สำเร็จ: ที่อยู่ไฟล์ไม่ได้รับอนุญาต</td><td>ที่อยู่ไฟล์ไม่ตรงกับที่เก็บที่กำหนด แอปปฏิเสธเพื่อความปลอดภัย — แจ้งผู้ดูแล</td></tr>
+<tr><td>ดาวน์โหลดไม่สำเร็จ: ดาวน์โหลดไม่ได้ (รหัส)</td><td>เซิร์ฟเวอร์ปฏิเสธ — ลองใหม่ภายหลัง</td></tr>
+<tr><td>ไฟล์ที่โหลดไม่ตรงกับที่ GitHub รับรอง (SHA-256) จึงลบทิ้งแล้ว</td><td>ไฟล์เสียหายระหว่างโหลด — กดดาวน์โหลดใหม่ ถ้ายังเป็นอยู่ให้แจ้งผู้ดูแล</td></tr>
+<tr><td>เปิดไฟล์ไม่ได้: ...</td><td>Windows เปิดไฟล์ไม่ได้ — ไปที่โฟลเดอร์ Downloads แล้วดับเบิลคลิกไฟล์เอง</td></tr>
+<tr><td>โหลดรายการไม่สำเร็จ: ...</td><td>โหลดรายการไม่ได้ — ตรวจเครือข่ายแล้วลองใหม่</td></tr>
+<tr><td>ยังไม่มีเครื่องมือในรายการ</td><td>ไม่มีเครื่องมือกำหนดไว้ในแอป</td></tr>
+</table></div>
+<div class="box tip"><b>เคล็ดลับ</b>แอปจำรายการจาก GitHub ไว้ 10 นาที (เพื่อไม่ให้เรียกบ่อยเกินกำหนดของ GitHub) หากเพิ่งมีโปรแกรมเวอร์ชันใหม่แล้วยังไม่เห็น กด <span class="ui">โหลดรายการใหม่</span> เพื่อบังคับโหลดใหม่</div>
+</section>
+
+<section class="chapter" id="ch4" data-group="การใช้งาน">
+<h2><span class="num">4</span>อัปเดตแอป SEMed Tools</h2>
+<h3 id="s4-1">4.1 วัตถุประสงค์</h3>
+<p>แอปตรวจหาเวอร์ชันใหม่เองทุกครั้งที่เปิด (ต้องมีอินเทอร์เน็ต) <b>แอปจะไม่ดาวน์โหลดหรือติดตั้งอะไรโดยไม่ถามคุณ</b> ถ้าออฟไลน์ยังใช้งานได้ตามปกติ</p>
+<h3 id="s4-2">4.2 ขั้นตอนอัปเดต</h3>
+<figure class="fig">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200"><rect x="0" y="0" width="900" height="200" rx="0" fill="#ffffff" stroke="#d0d0d0" stroke-width="1"/><rect x="0" y="0" width="900" height="48" rx="0" fill="#f5f5f5" stroke="none" stroke-width="1"/><line x1="0" y1="48" x2="900" y2="48" stroke="#d0d0d0" stroke-width="1"/><text x="24" y="29" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="start" font-weight="bold">มีเวอร์ชันใหม่ 1.0.7</text><rect x="260" y="8" width="110" height="32" rx="6" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/><text x="315.0" y="29.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">อัปเดตเลย</text><rect x="382" y="8" width="110" height="32" rx="6" fill="#ffffff" stroke="#bdbdbd" stroke-width="1"/><text x="437.0" y="29.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="middle">ไว้ทีหลัง</text><circle cx="90" cy="70" r="11" fill="#d92d20"/><text x="90" y="75" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text><circle cx="315" cy="70" r="11" fill="#d92d20"/><text x="315" y="75" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">2</text><circle cx="437" cy="70" r="11" fill="#d92d20"/><text x="437" y="75" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">3</text><rect x="0" y="110" width="900" height="48" rx="0" fill="#f5f5f5" stroke="none" stroke-width="1"/><line x1="0" y1="158" x2="900" y2="158" stroke="#d0d0d0" stroke-width="1"/><text x="24" y="139" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="start" font-weight="bold">ดาวน์โหลดเวอร์ชัน 1.0.7 เรียบร้อยแล้ว</text><rect x="380" y="118" width="160" height="32" rx="6" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/><text x="460.0" y="139.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">ติดตั้งและรีสตาร์ท</text><rect x="552" y="118" width="110" height="32" rx="6" fill="#ffffff" stroke="#bdbdbd" stroke-width="1"/><text x="607.0" y="139.0" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="14" fill="#16181d" text-anchor="middle">ไว้ทีหลัง</text><circle cx="460" cy="180" r="11" fill="#d92d20"/><text x="460" y="185" font-family="Leelawadee UI, Tahoma, sans-serif" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle">4</text></svg>
+<figcaption><b>ภาพที่ 5</b> แถบอัปเดตด้านบนของหน้าต่าง (ภาพจำลอง) — 1 ข้อความแจ้งเวอร์ชันใหม่ · 2 ปุ่มอัปเดตเลย · 3 ปุ่มไว้ทีหลัง · 4 ปุ่มติดตั้งและรีสตาร์ท (ขั้นตอนหลังโหลดเสร็จ)</figcaption>
+</figure>
+<ol class="steps">
+<li>เมื่อพบเวอร์ชันใหม่ แถบด้านบนแสดง <i>มีเวอร์ชันใหม่ X</i> กด <span class="ui">อัปเดตเลย</span></li>
+<li>แถบแสดง <i>กำลังเริ่มดาวน์โหลด...</i> แล้ว <i>กำลังดาวน์โหลดอัปเดต N%</i></li>
+<li>เมื่อเสร็จแสดง <i>ดาวน์โหลดเวอร์ชัน X เรียบร้อยแล้ว</i> กด <span class="ui">ติดตั้งและรีสตาร์ท</span> แอปจะปิดแล้วเปิดใหม่เป็นเวอร์ชันใหม่</li>
+</ol>
+<div class="box warn"><b>ข้อควรระวัง</b>ก่อนกด <span class="ui">ติดตั้งและรีสตาร์ท</span> ให้ส่งออกผลการตรวจที่ยังต้องใช้ (<a href="#s2-6">2.6</a>) เพราะผลบนหน้าจอจะหายเมื่อแอปปิด</div>
+<h3 id="s4-3">4.3 เลื่อนอัปเดตและตรวจเอง</h3>
+<ul>
+<li><span class="ui">ไว้ทีหลัง</span> — ซ่อนแถบจนกว่าจะเปิดแอปครั้งถัดไป</li>
+<li><span class="ui">ตรวจสอบอัปเดต</span> (มุมบนของหน้าจอ) — ตรวจเองได้ทุกเมื่อ จะขึ้น <i>เป็นเวอร์ชันล่าสุดแล้ว</i> ถ้าไม่มีของใหม่</li>
+</ul>
+<h3 id="s4-4">4.4 ข้อความที่พบบ่อย</h3>
+<div class="tblwrap"><table>
+<tr><th>ข้อความ</th><th>ความหมาย / วิธีแก้</th></tr>
+<tr><td>ตรวจอัปเดตได้เฉพาะแอปที่ติดตั้งแล้ว</td><td>เปิดจากโหมดทดสอบของนักพัฒนา — ใช้แอปที่ติดตั้งจากตัวติดตั้งแทน</td></tr>
+<tr><td>ตรวจอัปเดตไม่สำเร็จ: ...</td><td>ตรวจเครือข่ายแล้วกด <span class="ui">ตรวจสอบอัปเดต</span> ใหม่ ถ้ายังไม่ได้ให้แจ้งผู้ดูแล</td></tr>
+</table></div>
+<div class="box note"><b>หมายเหตุ</b>แอปจะเห็นเวอร์ชันใหม่ก็ต่อเมื่อเลขเวอร์ชันบน GitHub <b>สูงกว่า</b>เวอร์ชันที่ติดตั้งอยู่</div>
+</section>
+
+<section class="chapter" id="ch5" data-group="ผู้ดูแลระบบ">
+<h2><span class="num">5</span>สำหรับผู้ดูแล (ปล่อยเวอร์ชันและเพิ่มเครื่องมือ)</h2>
+<div class="box warn"><b>ข้อควรระวัง</b>บทนี้สำหรับผู้ดูแลที่มีโค้ดโปรเจคและ Node.js ต้องใช้คำสั่งในโปรเจค ไม่ใช่หน้าจอของแอป ผู้ใช้ทั่วไปข้ามได้ สรุปจาก README ของโปรเจค (ยังไม่ได้ทดลองรันทุกคำสั่งขณะเขียนคู่มือ)</div>
+<h3 id="s5-1">5.1 ปล่อยเวอร์ชันใหม่</h3>
+<ol class="steps">
+<li>ครั้งแรก: สร้าง GitHub token (Fine-grained: Contents Read and write หรือ classic: <code>repo</code>) คัดลอก <code>.env.example</code> เป็น <code>.env</code> ใส่ <code>GH_TOKEN=...</code> (ไฟล์ <code>.env</code> ไม่ขึ้น git)</li>
+<li>commit โค้ดให้เรียบร้อย (working tree ต้องสะอาด)</li>
+<li>รันคำสั่งเดียว</li>
+</ol>
+<div class="tblwrap"><table>
+<tr><th>คำสั่ง</th><th>ผล</th></tr>
+<tr><td><code>npm run ship</code></td><td>patch (1.0.0 → 1.0.1) — แก้บั๊ก/ปรับข้อความ</td></tr>
+<tr><td><code>npm run ship:minor</code></td><td>minor (1.0.1 → 1.1.0) — เพิ่มความสามารถใหม่</td></tr>
+<tr><td><code>npm run ship:major</code></td><td>major (1.1.0 → 2.0.0) — เปลี่ยนพฤติกรรมครั้งใหญ่</td></tr>
+</table></div>
+<p>ลำดับ: <code>npm test</code> → เพิ่มเลขเวอร์ชัน + tag → <code>git push --follow-tags</code> → build และอัปโหลด Release → ตรวจ Release บน GitHub ให้เอง ถ้าขึ้น ✓ แปลว่าผู้ใช้อัปเดตได้ ถ้าพังกลางทาง รัน <code>npm run release</code> ซ้ำได้ ตรวจอย่างเดียวด้วย <code>npm run release:check</code></p>
+<div class="box danger"><b>อันตราย</b>ห้ามลบหรือแก้ไฟล์ <code>latest.yml</code> ใน Release ด้วยมือ และ repo ต้องเป็น <b>public</b> (ห้ามใส่ข้อมูลคนไข้ใน repo) มิฉะนั้นเครื่องผู้ใช้จะอัปเดตไม่ได้</div>
+<h3 id="s5-2">5.2 เพิ่ม/แก้เครื่องมือในหน้าโปรแกรมอื่น</h3>
+<p>แก้รายการ <code>TOOLS</code> ในไฟล์ <code>src/main/tools-core.js</code></p>
+<div class="tblwrap"><table>
+<tr><th>ฟิลด์</th><th>ความหมาย</th></tr>
+<tr><td><code>id</code> <span class="req">*</span></td><td>รหัสไม่ซ้ำ</td></tr>
+<tr><td><code>type</code> <span class="req">*</span></td><td><code>github</code> (ดาวน์โหลด .exe จาก Release ล่าสุดของ repo ที่ต้องเป็น public) หรือ <code>web</code> (เปิดลิงก์)</td></tr>
+<tr><td><code>repo</code> / <code>url</code> <span class="req">*</span></td><td><code>owner/repo</code> สำหรับ github, URL สำหรับ web</td></tr>
+<tr><td><code>name</code>, <code>desc</code></td><td>ชื่อและคำอธิบายที่แสดงบนการ์ด</td></tr>
+<tr><td><code>portable</code></td><td><code>true</code> ถ้าเป็น .exe รันได้เลย (ปุ่มจะเขียนว่า เปิดโปรแกรม)</td></tr>
+<tr><td><code>installName</code></td><td>ชื่อโปรแกรมใน Settings &gt; Apps ใช้ขึ้นสถานะ ติดตั้งแล้ว/มีเวอร์ชันใหม่</td></tr>
+</table></div>
+<p>เมื่อแก้แล้วต้องปล่อยเวอร์ชันใหม่ (5.1) เครื่องผู้ใช้จึงจะเห็นรายการใหม่</p>
+</section>
+
+<section class="chapter" id="chA" data-group="ภาคผนวก">
+<h2><span class="num">A</span>ภาคผนวก — สรุปกฎตรวจไฟล์</h2>
+<div class="tblwrap"><table>
+<tr><th>ระดับ</th><th>กฎ</th></tr>
+<tr><td>ไฟล์</td><td>นามสกุล .xls/.xlsx/.csv · ไม่เกิน 10MB · ไม่ว่าง · เนื้อหาตรงกับนามสกุล · มีคอลัมน์ Code, BestTrial, FVC, FEV1</td></tr>
+<tr><td>แถว</td><td>Code ไม่ว่างและส่วนหน้าจุดแรกเป็นตัวเลข · FVC, FEV1 ไม่ว่างและเป็นตัวเลข · BestTrial ว่าง หรือ X/BEST</td></tr>
+<tr><td>CN</td><td>มี BestTrial (X/BEST) พอดี 1 แถวต่อ CN</td></tr>
+<tr><td>ข้ามไฟล์</td><td>CN ซ้ำในหลายไฟล์ → คำเตือน (ไม่ทำให้ไฟล์ไม่สมบูรณ์)</td></tr>
+</table></div>
+<p>ไม่มีตารางสิทธิ์ และไม่มีบทบาทมาตรฐาน เพราะแอปไม่มีระบบผู้ใช้ (ดู <a href="#s0-3">0.3</a>)</p>
+</section>
+
+<section class="chapter" id="chB" data-group="ภาคผนวก">
+<h2><span class="num">B</span>ภาคผนวก — คำถามที่พบบ่อย</h2>
+<h3 id="sB-1">B.1 ไฟล์ของฉันขึ้น "ไม่ใช่ไฟล์ .xlsx จริง"</h3>
+<p>มักเกิดจากเปลี่ยนนามสกุลเอง เปิดไฟล์ใน Excel แล้ว <b>บันทึกเป็น</b> ชนิด .xlsx จริง แล้วตรวจใหม่ (ดู <a href="#s2-5">2.5</a>)</p>
+<h3 id="sB-2">B.2 ไฟล์มีหลายชีต แต่แอปตรวจแค่ชีตแรก</h3>
+<p>ถูกต้อง แอปอ่านเฉพาะชีตแรก ย้ายข้อมูลที่ต้องตรวจมาไว้ชีตแรก</p>
+<h3 id="sB-3">B.3 ผลหายไปหลังเลือกไฟล์ใหม่</h3>
+<p>เป็นการทำงานปกติ ผลเก่าจะถูกล้างเมื่อเลือกไฟล์ชุดใหม่ ให้ส่งออกก่อน (<a href="#s2-6">2.6</a>)</p>
+<h3 id="sB-4">B.4 กด "ตรวจสอบอัปเดต" แล้วบอกว่าตรวจได้เฉพาะแอปที่ติดตั้งแล้ว</h3>
+<p>แอปที่เปิดในโหมดทดสอบไม่รองรับอัปเดตอัตโนมัติ (<a href="#s4-4">4.4</a>)</p>
+<h3 id="sB-5">B.5 Windows เตือนตอนติดตั้ง/เปิดโปรแกรมที่โหลดมา</h3>
+<p>ตัวติดตั้งยังไม่ได้เซ็นชื่อดิจิทัล จึงอาจมี SmartScreen เตือน ให้ดำเนินการต่อเมื่อมั่นใจว่าไฟล์มาจาก SEMed (ยังไม่ยืนยันพฤติกรรมของโปรแกรมพกพา IDCard_reader.exe)</p>
+<h3 id="sB-6">B.6 ในหน้าโปรแกรมอื่น มีโปรแกรมที่ปุ่มกดไม่ได้</h3>
+<p>ดูเหตุผลข้างปุ่ม แล้วดู <a href="#s3-5">3.5</a></p>
+</section>
+
+<section class="chapter" id="chC" data-group="ภาคผนวก">
+<h2><span class="num">C</span>ภาคผนวก — แนวปฏิบัติที่แนะนำ</h2>
+<ul>
+<li>ตรวจหลายไฟล์พร้อมกัน (สูงสุด 20) เพื่อให้แอปเตือน CN ซ้ำข้ามไฟล์ได้</li>
+<li>แก้ที่ไฟล์ต้นฉบับแล้วตรวจซ้ำจนขึ้น "สมบูรณ์" ทุกไฟล์ก่อนนำไปใช้ต่อ</li>
+<li>ส่งออกผลเก็บไว้ก่อนอัปเดตแอปหรือก่อนเลือกไฟล์ชุดใหม่</li>
+<li>ติดตั้งอัปเดตเมื่อแอปแจ้ง เพื่อให้กฎตรวจตรงกับเวอร์ชันล่าสุด</li>
+<li>ดาวน์โหลดโปรแกรมจากแท็บ <span class="ui">โปรแกรมอื่น</span> เท่านั้น เพื่อให้ได้การตรวจ SHA-256</li>
+</ul>
+</section>
+
+</main>
+</div>
+<button id="totop" class="no-print" type="button" aria-label="กลับขึ้นบนสุด">↑</button>
+
+<script>
+(function(){
+var manual=document.getElementById('manual');
+/* ให้ทุก h3 มี id */
+var n=0;manual.querySelectorAll('h3').forEach(function(h){if(!h.id){h.id='h3-auto-'+(++n);}});
+var chapters=[].slice.call(manual.querySelectorAll('section.chapter'));
+function chTitle(c){var h=c.querySelector('h2'),n=h.querySelector('.num').textContent;return n+' '+h.textContent.slice(n.length).trim();}
+/* สารบัญ */
+var toc=document.getElementById('toc');
+chapters.forEach(function(c){
+  var a=document.createElement('a');a.href='#'+c.id;a.className='h2';a.textContent=chTitle(c);toc.appendChild(a);
+  c.querySelectorAll('h3').forEach(function(h){var s=document.createElement('a');s.href='#'+h.id;s.className='h3';s.textContent=h.textContent;toc.appendChild(s);});
+});
+/* เมนูลัด */
+var sc=document.getElementById('shortcuts');var groups={};var order=[];
+chapters.forEach(function(c){var g=c.getAttribute('data-group')||'อื่นๆ';if(!groups[g]){groups[g]=[];order.push(g);}groups[g].push(c);});
+order.forEach(function(g){
+  var box=document.createElement('div');box.className='sc';
+  var b=document.createElement('button');b.type='button';b.textContent=g+' ▾';b.setAttribute('aria-expanded','false');
+  var m=document.createElement('div');m.className='menu';
+  groups[g].forEach(function(c){
+    var a=document.createElement('a');a.href='#'+c.id;a.className='ch';a.textContent=chTitle(c);m.appendChild(a);
+    c.querySelectorAll('h3').forEach(function(h){var s=document.createElement('a');s.href='#'+h.id;s.className='sub';s.textContent=h.textContent;m.appendChild(s);});
+  });
+  box.appendChild(b);box.appendChild(m);sc.appendChild(box);
+  b.addEventListener('click',function(e){e.stopPropagation();var was=box.classList.contains('open');closeMenus();if(!was){box.classList.add('open');b.setAttribute('aria-expanded','true');}});
+  m.addEventListener('click',closeMenus);
+});
+function closeMenus(){sc.querySelectorAll('.sc').forEach(function(x){x.classList.remove('open');x.firstChild.setAttribute('aria-expanded','false');});}
+document.addEventListener('click',function(e){if(!sc.contains(e.target))closeMenus();});
+/* ไฮไลต์สารบัญตามตำแหน่ง */
+var heads=[].slice.call(manual.querySelectorAll('h2,h3'));
+var links={};toc.querySelectorAll('a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a;});
+var tick=false;
+function onScroll(){
+  var tt=document.getElementById('totop');tt.style.display=window.scrollY>400?'block':'none';
+  if(tick)return;tick=true;requestAnimationFrame(function(){
+    tick=false;var cur=null;
+    heads.forEach(function(h){var id=h.id||h.parentNode.id;if(h.getBoundingClientRect().top<150)cur=id;});
+    toc.querySelectorAll('a.active').forEach(function(a){a.classList.remove('active');});
+    if(cur&&links[cur]){links[cur].classList.add('active');}
+  });
+}
+window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+document.getElementById('totop').addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+/* ค้นหา */
+var q=document.getElementById('q'),hc=document.getElementById('hitcount'),marks=[],cur=-1;
+function clearMarks(){manual.querySelectorAll('mark').forEach(function(m){var p=m.parentNode;p.replaceChild(document.createTextNode(m.textContent),m);p.normalize();});marks=[];cur=-1;hc.textContent='';}
+function doSearch(){
+  clearMarks();var t=q.value.trim();if(t.length<2)return;
+  var low=t.toLowerCase();var w=document.createTreeWalker(manual,NodeFilter.SHOW_TEXT,{acceptNode:function(nd){return nd.parentNode.closest('svg,script,style')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
+  var nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+  nodes.forEach(function(nd){
+    var s=nd.nodeValue,ls=s.toLowerCase(),i=ls.indexOf(low);if(i<0)return;
+    var frag=document.createDocumentFragment(),last=0;
+    while(i>=0){frag.appendChild(document.createTextNode(s.slice(last,i)));var m=document.createElement('mark');m.textContent=s.slice(i,i+t.length);frag.appendChild(m);last=i+t.length;i=ls.indexOf(low,last);}
+    frag.appendChild(document.createTextNode(s.slice(last)));nd.parentNode.replaceChild(frag,nd);
+  });
+  marks=[].slice.call(manual.querySelectorAll('mark'));
+  hc.textContent=marks.length?marks.length+' ผล':'ไม่พบ';
+  if(marks.length)goto(0);
+}
+function goto(i){if(!marks.length)return;if(cur>=0)marks[cur].classList.remove('cur');cur=(i+marks.length)%marks.length;marks[cur].classList.add('cur');marks[cur].scrollIntoView({block:'center'});hc.textContent=(cur+1)+'/'+marks.length;}
+var qt;q.addEventListener('input',function(){clearTimeout(qt);qt=setTimeout(doSearch,250);});
+q.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();goto(cur+(e.shiftKey?-1:1));}if(e.key==='Escape'){q.value='';clearMarks();q.blur();}});
+document.addEventListener('keydown',function(e){
+  if(e.key==='/'&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();q.focus();q.select();}
+  if(e.key==='Escape')closeMenus();
+});
+/* Export PDF */
+document.getElementById('btnPdf').addEventListener('click',function(){
+  clearMarks();var old=document.title;document.title='คู่มือการใช้งาน SEMed Tools';
+  var restore=function(){document.title=old;window.removeEventListener('afterprint',restore);};
+  window.addEventListener('afterprint',restore);window.print();
+});
+/* Export Word (MHTML) */
+var WS={
+ 'h2':'font-size:20pt;font-weight:bold;color:#0b7a55;border-bottom:2pt solid #0b7a55;margin:0 0 10pt 0;',
+ 'h3':'font-size:15pt;font-weight:bold;margin:14pt 0 4pt 0;',
+ 'h4':'font-size:13pt;font-weight:bold;margin:10pt 0 3pt 0;',
+ 'table':'border-collapse:collapse;width:100%;margin:6pt 0;',
+ 'th':'border:1pt solid #999;background:#f0f0f0;padding:3pt 5pt;font-size:11pt;text-align:left;',
+ 'td':'border:1pt solid #999;padding:3pt 5pt;font-size:11pt;vertical-align:top;',
+ 'code':'font-family:Consolas;font-size:10.5pt;background:#eeeeee;',
+ 'p':'margin:4pt 0;','li':'margin:2pt 0;'
+};
+var BOX={tip:'#e9f6f0;#0b7a55',warn:'#fdf4de;#d99a00',note:'#eaf2fc;#1f5fa8',danger:'#fdf0ee;#b3261e'};
+function blobToB64(blob){return new Promise(function(res){var r=new FileReader();r.onload=function(){res(String(r.result).split(',')[1]);};r.readAsDataURL(blob);});}
+function utf8b64(s){var b=new TextEncoder().encode(s),o='';for(var i=0;i<b.length;i+=0x8000)o+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(o);}
+function wrap76(s){return s.replace(/(.{76})/g,'$1\r\n');}
+function svgToPng(svg){return new Promise(function(res,rej){
+  var s=new XMLSerializer().serializeToString(svg);
+  if(!/xmlns=/.test(s.slice(0,200)))s=s.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg"');
+  var vb=svg.viewBox.baseVal,W=vb.width,H=vb.height;
+  var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=W*2;c.height=H*2;var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);c.toBlob(function(b){res({blob:b,w:W,h:H});},'image/png');};
+  img.onerror=rej;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
+});}
+document.getElementById('btnDoc').addEventListener('click',async function(){
+  clearMarks();
+  var clone=manual.cloneNode(true);
+  clone.querySelectorAll('.no-print,.no-export,.cover').forEach(function(e){e.remove();});
+  clone.querySelectorAll('a').forEach(function(a){a.replaceWith(document.createTextNode(a.textContent));});
+  clone.querySelectorAll('.num').forEach(function(e){e.remove();});
+  /* ภาพ */
+  var origSvgs=[].slice.call(manual.querySelectorAll('figure.fig svg'));
+  var cloneSvgs=[].slice.call(clone.querySelectorAll('figure.fig svg'));
+  var parts=[];
+  for(var i=0;i<cloneSvgs.length;i++){
+    var png=await svgToPng(origSvgs[i]);var name='fig'+(i+1)+'.png';
+    parts.push({name:name,b64:await blobToB64(png.blob)});
+    var img=document.createElement('img');img.src='file:///C:/'+name;img.width=620;img.height=Math.round(620*png.h/png.w);
+    cloneSvgs[i].replaceWith(img);
+  }
+  /* inline style */
+  Object.keys(WS).forEach(function(sel){clone.querySelectorAll(sel).forEach(function(e){e.setAttribute('style',WS[sel]+(e.getAttribute('style')||''));});});
+  clone.querySelectorAll('.box').forEach(function(e){var k=Object.keys(BOX).filter(function(x){return e.classList.contains(x);})[0]||'note';var c=BOX[k].split(';');e.setAttribute('style','background:'+c[0]+';border-left:4pt solid '+c[1]+';padding:5pt 8pt;margin:6pt 0;');});
+  clone.querySelectorAll('.ui').forEach(function(e){e.setAttribute('style','font-weight:bold;background:#eeeeee;');});
+  clone.querySelectorAll('.req').forEach(function(e){e.setAttribute('style','color:#b3261e;font-weight:bold;');});
+  clone.querySelectorAll('figcaption').forEach(function(e){e.setAttribute('style','font-size:10pt;color:#555;margin:2pt 0 8pt 0;');});
+  clone.querySelectorAll('table').forEach(function(t){t.setAttribute('border','1');t.setAttribute('cellspacing','0');t.setAttribute('cellpadding','4');});
+  /* หัวบทขึ้นหน้าใหม่ + "บทที่ N" */
+  var tocLines=[];
+  clone.querySelectorAll('section.chapter').forEach(function(sec,idx){
+    var h=sec.querySelector('h2'),orig=chapters[idx].querySelector('.num').textContent;
+    var label=/^[0-9]+$/.test(orig)?'บทที่ '+orig+' ':'ภาคผนวก '+orig+' ';
+    var title=h.textContent.replace(/^ภาคผนวก\s*—\s*/,'');
+    h.textContent=label+title;tocLines.push(label+title);
+    sec.setAttribute('style','page-break-before:always;');
+  });
+  var coverHtml='<div style="text-align:center;margin-top:200pt;"><p style="font-size:34pt;font-weight:bold;color:#0b7a55;">คู่มือการใช้งาน SEMed Tools</p><p style="font-size:18pt;">แอปรวมเครื่องมือของ SEMed สำหรับ Windows</p><p style="font-size:12pt;color:#555;">เขียนจากแอปเวอร์ชัน 1.0.6</p></div>';
+  var tocHtml='<div style="page-break-before:always;"><h2 style="'+WS.h2+'">สารบัญ</h2>'+tocLines.map(function(t){return '<p style="font-size:13pt;margin:4pt 0;">'+t+'</p>';}).join('')+'</div>';
+  var html='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>คู่มือการใช้งาน SEMed Tools</title><style>@page{size:A4;margin:2cm}body{font-family:"TH Sarabun New","Leelawadee UI",Tahoma;font-size:14pt;}</style></head><body>'+coverHtml+tocHtml+clone.innerHTML+'</body></html>';
+  var B='----=_NextPart_semed_manual';
+  var mh='MIME-Version: 1.0\r\nContent-Type: multipart/related; boundary="'+B+'"; type="text/html"\r\n\r\n';
+  mh+='--'+B+'\r\nContent-Type: text/html; charset="utf-8"\r\nContent-Transfer-Encoding: base64\r\nContent-Location: file:///C:/manual.htm\r\n\r\n'+wrap76(utf8b64(html))+'\r\n\r\n';
+  parts.forEach(function(p){mh+='--'+B+'\r\nContent-Type: image/png\r\nContent-Transfer-Encoding: base64\r\nContent-Location: file:///C:/'+p.name+'\r\n\r\n'+wrap76(p.b64)+'\r\n\r\n';});
+  mh+='--'+B+'--\r\n';
+  var blob=new Blob([mh],{type:'application/msword'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='คู่มือการใช้งาน SEMed Tools.doc';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);
+});
+})();
+</script>
+</body>
+</html>
